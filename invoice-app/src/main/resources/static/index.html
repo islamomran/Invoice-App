@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Uppy</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css">
+  <style>
+    .uppy.uppy-ProgressBar {
+      height: 30px;
+      border: 1px solid red;
+    }
+
+    .top_header {
+      background: black;
+      color: white;
+    }
+
+    .heading {
+      padding: 10px;
+    }
+
+    .heading p {
+      text-align: right;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    label {
+      margin-right: 10px;
+    }
+
+    .divider {
+      border: 1px dashed #dfdfdf;
+    }
+
+    .M20 {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- main header start here -->
+  <div class="row top_header">
+    <div class="container">
+      <div class="row heading">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-9">
+          <p class="text-right ">User Name</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- main header end here -->
+  <div class="container">
+    <!-- step 1 start here -->
+    <form>
+      <div class="row divider">
+        <br>
+        <div class="col-md-3 M20">
+          <div class="card-header p-0">
+            <div class="bg-info text-white text-center py-2">
+              <label for="exampleInputEmail1">Input Form</label></div>
+          </div>
+        </div>
+        <div class="col-md-9 M20">
+
+          <div class="form-group">
+            <div class="input-group mb-2">
+              <label for="exampleInputEmail1">Receiving Date</label>
+              <div class="input-group-prepend">
+                <div class="input-group-text"><i class="fa fa-calendar text-info" aria-hidden="true"></i></div>
+              </div>
+              <input type="date" class="form-control" id="nombre" name="nombre" placeholder="Enter Date" required>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+    <!-- step 2 end here -->
+    <!-- step 3 start here -->
+    <div class="row row1 divider">
+      <div class="col-md-3 M20">
+        <div class="card-header p-0">
+          <div class="bg-info text-white text-center py-2">
+            <p class="m-0">Single Invoice</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9 M20">
+        <form action="mail.php" method="post">
+          <div class="card border-primary rounded-0">
+            <div class="card-header p-0">
+              <div class="bg-info text-white text-center py-2">
+                <p class="m-0">Single Invoice Receiving</p>
+              </div>
+            </div>
+            <div class="card-body p-3">
+              <!--Body-->
+              <div id="drag-drop-area"></div>
+              <div class="for-ProgressBar"></div>
+            </div>				
+          </div>
+        </form>
+
+      </div>
+    </div>
+    <!-- step2 end here -->
+
+	<button onClick="submit()">submit</button>
+  <script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
+  <script>
+	var imageUrl;
+    var uppy = Uppy.Core()
+      .use(Uppy.Dashboard, {
+        target: '#drag-drop-area',
+        trigger: '.UppyModalOpenerBtn',
+        inline: true,
+        autoProceed: true,
+        showProgressDetails: true,
+        height: 200,
+        metaFields: [
+          { id: 'name', name: 'Name', placeholder: 'file name' },
+          { id: 'caption', name: 'Caption', placeholder: 'describe what the image is about' }
+        ],
+        browserBackButtonClose: true,
+        restrictions: {
+          allowedFileTypes: ['image/*', '.jpg', '.jpeg', '.png', '.gif']
+        },
+      })
+      .use(Uppy.ProgressBar, {
+        target: '.for-ProgressBar', hideAfterFinish: false
+      })
+      .use(Uppy.Tus, {endpoint: 'https://master.tus.io/files/'})
+	  uppy.on('upload-success', (file, response) => {
+			imageUrl = response.uploadURL;
+			console.log(imageUrl);
+	  })
+	
+	function submit(){
+		invoiceDate = document.getElementById("nombre");
+		$.ajax({
+			type: "POST",
+			url: "http://localhost:8081/invoice",
+			contentType:"application/json; charset=utf-8",
+			dataType: "json",
+			data: JSON.stringify({"invoiceDate" : invoiceDate.value,"imageUrl" : imageUrl}),
+			success : function(){alert("Uploaded");}
+});
+	}
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1fei74t" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.2.1">
+  <bpmn:process id="Invoice_Scan_Process" name="Invoice Scan Process" isExecutable="true" camunda:historyTimeToLive="730">
+    <bpmn:startEvent id="StartEvent_1" name="For Each Invoice">
+      <bpmn:outgoing>SequenceFlow_0x4tuc1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0x4tuc1" sourceRef="StartEvent_1" targetRef="Task_Read_Metadata" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_Submit_Or_Reject" name="Submit for Review or Reject">
+      <bpmn:incoming>SequenceFlow_05uz7z5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0au4ly0</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0j0c1iw</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_05uz7z5" sourceRef="Task_Invoice_DataEntry" targetRef="ExclusiveGateway_Submit_Or_Reject" />
+    <bpmn:sequenceFlow id="SequenceFlow_0au4ly0" sourceRef="ExclusiveGateway_Submit_Or_Reject" targetRef="Task_Review_Scan">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${dataEntryApproval=="approve"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="EndEvent_Reject" name="Reject">
+      <bpmn:incoming>SequenceFlow_0j0c1iw</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1xw1i2i</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0j0c1iw" sourceRef="ExclusiveGateway_Submit_Or_Reject" targetRef="EndEvent_Reject">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${dataEntryApproval=="reject"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_Approve_Reject_Send_To_Dataentry">
+      <bpmn:documentation />
+      <bpmn:incoming>SequenceFlow_1wedjwi</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1xw1i2i</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1ugpn05</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0m8em2i</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0gckhzv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_1wedjwi" sourceRef="Task_Review_Scan" targetRef="ExclusiveGateway_Approve_Reject_Send_To_Dataentry" />
+    <bpmn:sequenceFlow id="SequenceFlow_1xw1i2i" name="Reject" sourceRef="ExclusiveGateway_Approve_Reject_Send_To_Dataentry" targetRef="EndEvent_Reject">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${reviewerApproval=="reject"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1ugpn05" name="Send Back For MetaData Entry" sourceRef="ExclusiveGateway_Approve_Reject_Send_To_Dataentry" targetRef="Task_Invoice_DataEntry">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${reviewerApproval=="send back"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0m8em2i" name="Approve" sourceRef="ExclusiveGateway_Approve_Reject_Send_To_Dataentry" targetRef="EndEvent_Approve">
+      <bpmn:documentation>Approval can only be triggred if the overall state state exists and is in Acknowlodgement Pending</bpmn:documentation>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${reviewerApproval=="approve"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Task_Invoice_DataEntry" name="Manual MetaData Entry" camunda:formKey="embedded:app:forms/manualMetaData.html" camunda:assignee="demo">
+      <bpmn:incoming>SequenceFlow_1ugpn05</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1rfyjpg</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_05uz7z5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_Review_Scan" name="Review Invoice" camunda:formKey="embedded:app:forms/reviewInvoice.html" camunda:assignee="demo">
+      <bpmn:documentation>Trigger Before: 
+
+Check the overall state of the invoice and mention the same if the state is in any other state except for Acknowledgement Pending. If the Invoice state is Acknowledged, show the link of previously acknowledged invoice.
+
+Check if Invoice details are manually entered.
+
+Check if we can detect any change in Invoice from the accounting system.
+
+
+Trigger After:
+
+We can raise the Request For Rejecting Pervious Acknowledgement only if the overall state is in the Acknowledged state
+
+We can only Approve the process if the overall state is in the Acknowledgement Pending state</bpmn:documentation>
+      <bpmn:incoming>SequenceFlow_0au4ly0</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0pj9akz</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_14auiyf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1wedjwi</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_Approve" name="Approve">
+      <bpmn:incoming>SequenceFlow_0m8em2i</bpmn:incoming>
+      <bpmn:messageEventDefinition />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0pj9akz" sourceRef="Task_Read_Metadata" targetRef="Task_Review_Scan" />
+    <bpmn:sequenceFlow id="SequenceFlow_1rfyjpg" sourceRef="BoundaryEvent_017x8ot" targetRef="Task_Invoice_DataEntry" />
+    <bpmn:boundaryEvent id="BoundaryEvent_017x8ot" attachedToRef="Task_Read_Metadata">
+      <bpmn:outgoing>SequenceFlow_1rfyjpg</bpmn:outgoing>
+      <bpmn:errorEventDefinition />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0gckhzv" name="Request For Rejecting Pervious Acknowledgement" sourceRef="ExclusiveGateway_Approve_Reject_Send_To_Dataentry" targetRef="Task_0jhe081">
+      <bpmn:documentation>Request For Rejecting Pervious Acknologment can only be triggred if overall state exists and is in Acknowlodged</bpmn:documentation>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${reviewerApproval=="reject request"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_14auiyf" sourceRef="Task_0jhe081" targetRef="Task_Review_Scan" />
+    <bpmn:userTask id="Task_0jhe081" name="Accept or Reject " camunda:formKey="embedded:app:forms/acceptOrReject.html">
+      <bpmn:incoming>SequenceFlow_0gckhzv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_14auiyf</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_Read_Metadata" name="Read Metadata" camunda:class="com.invoiceapp.service.InvoiceService">
+      <bpmn:incoming>SequenceFlow_0x4tuc1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0pj9akz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:textAnnotation id="TextAnnotation_06hafxl">
+      <bpmn:text>Approve, Reject, Send Back For MetaData Entry or Request For Rejecting Pervious Acknowledgement</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_17oy0nx" sourceRef="ExclusiveGateway_Approve_Reject_Send_To_Dataentry" targetRef="TextAnnotation_06hafxl" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Invoice_Scan_Process">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="221" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="263" width="83" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0x4tuc1_di" bpmnElement="SequenceFlow_0x4tuc1">
+        <di:waypoint x="215" y="239" />
+        <di:waypoint x="279" y="239" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1mlx45z_di" bpmnElement="ExclusiveGateway_Submit_Or_Reject" isMarkerVisible="true">
+        <dc:Bounds x="548" y="328" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="530" y="385" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_05uz7z5_di" bpmnElement="SequenceFlow_05uz7z5">
+        <di:waypoint x="503" y="353" />
+        <di:waypoint x="548" y="353" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0au4ly0_di" bpmnElement="SequenceFlow_0au4ly0">
+        <di:waypoint x="573" y="328" />
+        <di:waypoint x="573" y="279" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0tb35sg_di" bpmnElement="EndEvent_Reject">
+        <dc:Bounds x="672" y="335" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="674" y="378" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0j0c1iw_di" bpmnElement="SequenceFlow_0j0c1iw">
+        <di:waypoint x="598" y="353" />
+        <di:waypoint x="672" y="353" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_10820tg_di" bpmnElement="ExclusiveGateway_Approve_Reject_Send_To_Dataentry" isMarkerVisible="true">
+        <dc:Bounds x="761" y="214" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="812" y="132" width="83" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1wedjwi_di" bpmnElement="SequenceFlow_1wedjwi">
+        <di:waypoint x="623" y="239" />
+        <di:waypoint x="761" y="239" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1xw1i2i_di" bpmnElement="SequenceFlow_1xw1i2i">
+        <di:waypoint x="786" y="264" />
+        <di:waypoint x="786" y="353" />
+        <di:waypoint x="708" y="353" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="738" y="338" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ugpn05_di" bpmnElement="SequenceFlow_1ugpn05">
+        <di:waypoint x="786" y="264" />
+        <di:waypoint x="786" y="438" />
+        <di:waypoint x="453" y="438" />
+        <di:waypoint x="453" y="393" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="534" y="440" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0m8em2i_di" bpmnElement="SequenceFlow_0m8em2i">
+        <di:waypoint x="811" y="239" />
+        <di:waypoint x="926" y="239" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="853" y="223" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_16o2emp_di" bpmnElement="Task_Invoice_DataEntry">
+        <dc:Bounds x="403" y="313" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1he3mww_di" bpmnElement="Task_Review_Scan">
+        <dc:Bounds x="523" y="199" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_06hafxl_di" bpmnElement="TextAnnotation_06hafxl">
+        <dc:Bounds x="802" y="134" width="168" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_17oy0nx_di" bpmnElement="Association_17oy0nx">
+        <di:waypoint x="801" y="229" />
+        <di:waypoint x="838" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1f1x53b_di" bpmnElement="EndEvent_Approve">
+        <dc:Bounds x="926" y="221" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="923" y="272" width="41" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0pj9akz_di" bpmnElement="SequenceFlow_0pj9akz">
+        <di:waypoint x="379" y="239" />
+        <di:waypoint x="523" y="239" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1rfyjpg_di" bpmnElement="SequenceFlow_1rfyjpg">
+        <di:waypoint x="340" y="297" />
+        <di:waypoint x="340" y="353" />
+        <di:waypoint x="403" y="353" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BoundaryEvent_1y1d8yq_di" bpmnElement="BoundaryEvent_017x8ot">
+        <dc:Bounds x="322" y="261" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0gckhzv_di" bpmnElement="SequenceFlow_0gckhzv">
+        <di:waypoint x="786" y="214" />
+        <di:waypoint x="786" y="108" />
+        <di:waypoint x="623" y="108" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="645" y="53" width="90" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_14auiyf_di" bpmnElement="SequenceFlow_14auiyf">
+        <di:waypoint x="573" y="148" />
+        <di:waypoint x="573" y="199" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0otm2vx_di" bpmnElement="Task_0jhe081">
+        <dc:Bounds x="523" y="68" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1r3o66t_di" bpmnElement="Task_Read_Metadata">
+        <dc:Bounds x="279" y="199" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
