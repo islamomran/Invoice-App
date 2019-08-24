@@ -1,14 +1,20 @@
 package com.invoiceapp.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+
 public class InvoiceModel {
-    private String invoiceDate;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private Date invoiceDate;
     private String imageUrl;
 
-    public void setInvoiceDate(String invoiceDate){
+    public void setInvoiceDate(Date invoiceDate){
         this.invoiceDate = invoiceDate;
     }
 
-    public String getInvoiceDate(){
+    public Date getInvoiceDate(){
         return this.invoiceDate;
     }
 
