@@ -20,6 +20,5 @@ public class InvoiceController {
     @CrossOrigin()
     public String submitInvoice(@RequestBody InvoiceModel invoiceModel){
         return this.invoiceService.instantiateInvoiceInstance(invoiceModel);
-
     }
 }

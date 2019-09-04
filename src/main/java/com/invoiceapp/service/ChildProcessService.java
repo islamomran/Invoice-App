@@ -1,13 +1,12 @@
 package com.invoiceapp.service;
 
-import com.sun.org.apache.xerces.internal.impl.dtd.models.CMAny;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ChildProcessService implements JavaDelegate {
@@ -24,6 +23,9 @@ public class ChildProcessService implements JavaDelegate {
         DelegateExecution processInstance = delegateExecution.getProcessInstance();
         String businessKey =  (String)processInstance.getVariable("invoiceId");
         Date invoiceRecievingDate =  (Date)processInstance.getVariable("invoiceRecievringDate");
-        camundaService.editInstanceStatusAndAcknowledgement(businessKey, "approved", "acknowledge", true, invoiceRecievingDate);
+        List<String> imageUrls = (List<String>)processInstance.getVariable("imageUrls");
+        camundaService.editInstanceStatusAndAcknowledgement(businessKey, "approved",
+                "acknowledge", true, invoiceRecievingDate, imageUrls);
+
     }
 }

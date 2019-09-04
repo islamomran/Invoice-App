@@ -19,6 +19,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class InvoiceService implements JavaDelegate {
@@ -35,19 +38,19 @@ public class InvoiceService implements JavaDelegate {
     }
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws IOException {
-        File file = null;
-        BarcodeModel barcodeModel = null;
-        String newImageUrl = "";
+    public void execute(DelegateExecution delegateExecution) {
+        File file;
+        BarcodeModel barcodeModel;
         try {
-            file = this.fetchImage((String) delegateExecution.getVariable("imageUrl"));
-            barcodeModel = this.scanImage(file);
-            newImageUrl = this.uploadScannedImage(barcodeModel.getScannedImage());
+            List<String> imageUrls = (List<String>)delegateExecution.getVariable("imageUrls");
+            file = this.fetchImages(imageUrls.get(0));
+            barcodeModel = this.scanImages(file);
+            imageUrls.set(0, this.uploadScannedImage(barcodeModel.getImages().get(0)));
             JSONObject barCodeJSON = new JSONObject(barcodeModel.getBarCode());
             String invoiceId = barCodeJSON.getString("id");
             delegateExecution.setVariable("invoiceId", invoiceId);
-            if(newImageUrl != null){
-                delegateExecution.setVariable("imageUrl", newImageUrl);
+            if(imageUrls != null){
+                delegateExecution.setVariable("imageUrls", imageUrls);
             }
         }catch (IOException ex){
             throw new BpmnError("error in executing script task : can't download the invoice image");
@@ -56,22 +59,24 @@ public class InvoiceService implements JavaDelegate {
         }
     }
 
-    public File fetchImage(String imageUrl) throws IOException {
-        URL url = new URL(imageUrl);
-        InputStream is = url.openStream();
-        File file = new File("image.jpg");
-        OutputStream os = new FileOutputStream(file);
-        byte[] b = new byte[2048];
-        int length;
-        while ((length = is.read(b)) != -1) {
-            os.write(b, 0, length);
-        }
-        is.close();
-        os.close();
+    public File fetchImages(String imageUrl) throws IOException {
+        File file;
+        int i=0;
+            URL url = new URL(imageUrl);
+            InputStream is = url.openStream();
+            file = new File("image"+ i +".jpg");
+            OutputStream os = new FileOutputStream(file);
+            byte[] b = new byte[4096];
+            int length;
+            while ((length = is.read(b)) != -1) {
+                os.write(b, 0, length);
+            }
+            is.close();
+            os.close();
         return file;
     }
 
-    public BarcodeModel scanImage(File file) throws IOException, BadHttpRequest {
+    public BarcodeModel scanImages(File file) throws IOException, BadHttpRequest {
         FileSystemResource fsr = new FileSystemResource(file);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -98,7 +103,9 @@ public class InvoiceService implements JavaDelegate {
         os.close();
         BarcodeModel barcodeModel = new BarcodeModel();
         barcodeModel.setBarCode(barcode);
-        barcodeModel.setScannedImage(new File("image.jpg"));
+        List<File> images = new ArrayList<>();
+        images.add(new File("image.jpg"));
+        barcodeModel.setImages(images);
         return barcodeModel;
     }
 
@@ -126,13 +133,13 @@ public class InvoiceService implements JavaDelegate {
             // See the documentation for more information.
             final TusUpload upload = new TusUpload(file);
 
+
             // You can also upload from an InputStream directly using a bit more work:
             // InputStream stream = …;
             // TusUpload upload = new TusUpload();
             // upload.setInputStream(stream);
             // upload.setSize(sizeOfStream);
             // upload.setFingerprint("stream");
-
 
             System.out.println("Starting upload...");
             // We wrap our uploading code in the TusExecutor class which will automatically catch
@@ -168,6 +175,7 @@ public class InvoiceService implements JavaDelegate {
 
                     System.out.println("Upload finished.");
                     System.out.format("Upload available at: %s", uploader.getUploadURL().toString());
+
                 }
             };
             executor.makeAttempts();

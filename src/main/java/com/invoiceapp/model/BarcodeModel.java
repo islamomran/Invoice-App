@@ -1,10 +1,11 @@
 package com.invoiceapp.model;
 
 import java.io.File;
+import java.util.List;
 
 public class BarcodeModel {
     private String barCode;
-    private File scannedImage;
+    private List<File> images;
 
     public String getBarCode() {
         return barCode;
@@ -14,11 +15,11 @@ public class BarcodeModel {
         this.barCode = barCode;
     }
 
-    public File getScannedImage() {
-        return scannedImage;
+    public List<File> getImages() {
+        return images;
     }
 
-    public void setScannedImage(File scannedImage) {
-        this.scannedImage = scannedImage;
+    public void setImages(List<File> images) {
+        this.images = images;
     }
 }

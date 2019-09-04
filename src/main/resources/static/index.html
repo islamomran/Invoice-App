@@ -119,7 +119,7 @@
 	<button onClick="submit()">submit</button>
   <script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
   <script>
-	var imageUrl;
+	var imageUrls = [];
     var uppy = Uppy.Core()
       .use(Uppy.Dashboard, {
         target: '#drag-drop-area',
@@ -141,9 +141,9 @@
         target: '.for-ProgressBar', hideAfterFinish: false
       })
       .use(Uppy.Tus, {endpoint: 'https://master.tus.io/files/'})
-	  uppy.on('upload-success', (file, response) => {
-			imageUrl = response.uploadURL;
-			console.log(imageUrl);
+	  uppy.on('upload-success', (file, response)=>{
+            imageUrls.push(response.uploadURL);
+			console.log(response.uploadURL);
 	  })
 	
 	function submit(){
@@ -152,9 +152,8 @@
 			type: "POST",
 			url: "http://localhost:8081/invoice",
 			contentType:"application/json; charset=utf-8",
-			dataType: "json",
-			data: JSON.stringify({"invoiceDate" : invoiceDate.value,"imageUrl" : imageUrl}),
-			success : function(){alert("Uploaded");}
+			data: JSON.stringify({"invoiceDate" : invoiceDate.value,"imageUrls" : imageUrls}),
+			success : function(){console.log("Uploaded");}
 });
 	}
   </script>

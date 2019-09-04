@@ -1,12 +1,8 @@
 package com.invoiceapp;
 
-import org.camunda.bpm.application.ProcessApplication;
-import org.camunda.bpm.application.impl.EmbeddedProcessApplication;
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @EnableProcessApplication("MyProcessApp")

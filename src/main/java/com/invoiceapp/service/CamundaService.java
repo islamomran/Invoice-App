@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
 import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.Execution;
 import org.camunda.bpm.engine.runtime.MessageCorrelationBuilder;
@@ -30,9 +31,12 @@ public class CamundaService {
     }
 
     public String createInvoiceInstance(InvoiceModel invoiceModel){
+        if(invoiceModel.getImageUrls() == null){
+            throw new BpmnError("No invoice get uploaded");
+        }
         Map<String, Object> processVars = new HashMap<>();
         processVars.put("invoiceRecievringDate", invoiceModel.getInvoiceDate());
-        processVars.put("imageUrl", invoiceModel.getImageUrl());
+        processVars.put("imageUrls", invoiceModel.getImageUrls());
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Invoice_Scan_Process", processVars);
         return processInstance.getId();
     }
@@ -41,14 +45,16 @@ public class CamundaService {
         Map<String, Object> processVars = new HashMap<>();
         processVars.put("status", "Acknowledgement Pending");
         processVars.put("is_acknowlodged", false);
+        processVars.put("isAmended", false);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Invoice_overall_state" , invoiceNum, processVars);
         return processInstance.getId();
     }
 
-    public String editInstanceStatus(String invoiceNum, String status, String messageName){
+    public String editInstanceStatus(String invoiceNum, String status, String messageName, boolean isAmended){
         runtimeService.createMessageCorrelation(messageName)
                 .processInstanceBusinessKey(invoiceNum)
                 .setVariable("status", status)
+                .setVariable("isAmended", isAmended)
                 .correlateWithResult();
         return status;
     }
@@ -62,26 +68,43 @@ public class CamundaService {
         return status;
     }
 
-    public String editInstanceStatusAndAcknowledgement(String invoiceNum, String status, String messageName, boolean isAcknowleged, Date recievingDate){
+    public String editInstanceStatusAndAcknowledgement(String invoiceNum, String status, String messageName,
+                                                       boolean isAcknowleged, Date recievingDate, List<String> imageUrls){
         runtimeService.createMessageCorrelation(messageName)
                 .processInstanceBusinessKey(invoiceNum)
                 .setVariable("status", status)
                 .setVariable("is_acknowlodged", isAcknowleged)
                 .setVariable("invoiceRecievringDate", recievingDate)
+                .setVariable("imageUrls", imageUrls)
                 .correlateWithResult();
         return status;
     }
 
     public void archiveAll(Date date){
-        List<Execution> executions = runtimeService.createExecutionQuery()
+        List<ProcessInstance> executions = runtimeService.createProcessInstanceQuery()
                 .variableValueLessThanOrEqual("invoiceRecievringDate", date)
                 .variableValueEquals("status", "approved")
+                .variableValueEquals("status", "cancelled")
                 .list();
         for(Execution execution: executions){
             ProcessInstance instance = (ProcessInstance) execution;
             runtimeService.createMessageCorrelation("archive")
                     .processInstanceBusinessKey(instance.getBusinessKey())
                     .setVariable("status", "archived")
+                    .correlateWithResult();
+        }
+    }
+
+    public void discardAll(Date date){
+        List<ProcessInstance> executions = runtimeService.createProcessInstanceQuery()
+                .variableValueLessThanOrEqual("invoiceRecievringDate", date)
+                .variableValueEquals("status", "cancelled")
+                .list();
+        for(Execution execution: executions){
+            ProcessInstance instance = (ProcessInstance) execution;
+            runtimeService.createMessageCorrelation("discard")
+                    .processInstanceBusinessKey(instance.getBusinessKey())
+                    .setVariable("status", "Discarded")
                     .correlateWithResult();
         }
     }

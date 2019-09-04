@@ -28,8 +28,8 @@ public class StateService implements JavaDelegate, ExecutionListener {
         return camundaService.createStateInstance(invoiceNum);
     }
 
-    public String editInstanceStatus(String invoiceNum, String status, String messageName){
-        return camundaService.editInstanceStatus(invoiceNum, status, messageName);
+    public String editInstanceStatus(String invoiceNum, String status, String messageName, boolean isAmended){
+        return camundaService.editInstanceStatus(invoiceNum, status, messageName, isAmended);
     }
 
     public String editInstanceStatusAndAcknowledgement(String invoiceNum, String status, String messageName, boolean isAcknowledged){
@@ -37,7 +37,7 @@ public class StateService implements JavaDelegate, ExecutionListener {
     }
 
     @Override
-    public void execute(DelegateExecution delegateExecution) throws IOException {
+    public void execute(DelegateExecution delegateExecution) {
         delegateExecution.getProcessInstance().setVariable("has_invoice_hash_changed", true);
     }
 
@@ -45,12 +45,16 @@ public class StateService implements JavaDelegate, ExecutionListener {
         camundaService.archiveAll(date);
     }
 
+    public void discardAll(Date date){
+        camundaService.discardAll(date);
+    }
+
     public void persistLatestStatus(String businessKey, String status){
         stateDAO.save(new StateModel(businessKey, status));
     }
 
     @Override
-    public void notify(DelegateExecution delegateExecution) throws Exception {
+    public void notify(DelegateExecution delegateExecution){
         persistLatestStatus(delegateExecution.getBusinessKey(), (String)delegateExecution.getVariable("status"));
 
     }

@@ -31,7 +31,7 @@ public class StateController {
 
     @PostMapping("/cancel")
     public String cancelInstance(String invoiceNum){
-        return this.stateService.editInstanceStatus(invoiceNum, "cancelled", "cancelPending");
+        return this.stateService.editInstanceStatus(invoiceNum, "cancelled", "cancelPending", false);
     }
 
     @PostMapping("/approve")
@@ -41,12 +41,12 @@ public class StateController {
 
     @PostMapping("/archive")
     public String archiveInstance(String invoiceNum){
-        return this.stateService.editInstanceStatus(invoiceNum, "archived", "archive");
+        return this.stateService.editInstanceStatus(invoiceNum, "archived", "archive", false);
     }
 
     @PostMapping("/cancelacknowledge")
     public String cancelAcknowledgeInstance(String invoiceNum){
-        return this.stateService.editInstanceStatus(invoiceNum, "Cancelled", "cancelAcknowledged");
+        return this.stateService.editInstanceStatus(invoiceNum, "Cancelled", "cancelAcknowledged", false);
     }
 
     @PostMapping("/rejectprevious")
@@ -56,17 +56,18 @@ public class StateController {
 
     @PostMapping("/amend")
     public String amendInstance(String invoiceNum){
-        return this.stateService.editInstanceStatus(invoiceNum, "Amended", "edited");
+        return this.stateService.editInstanceStatus(invoiceNum, "Amended", "edited", true);
     }
 
     @PostMapping("/discard")
     public String discardInstance(String invoiceNum){
-        return this.stateService.editInstanceStatus(invoiceNum, "Discarded", "discard");
+        return this.stateService.editInstanceStatus(invoiceNum, "Discarded", "discard", false);
     }
 
     @PostMapping("/archiveall")
     public void archiveAll(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)Date date){
         stateService.archiveAll(date);
+        stateService.discardAll(date);
     }
 
 }
