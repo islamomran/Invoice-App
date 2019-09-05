@@ -14,22 +14,19 @@
 <!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">-->
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.0.0/cropper.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/resources/demos/style.css" rel="stylesheet">
-    <link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">
+    <link href="https://transloadit.edgly.net/releases/uppy/v1.4.0/uppy.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-        $( function() {
-            $( "#sortable" ).sortable();
-            $( "#sortable" ).disableSelection();
-        } );
-    </script>
-    <!--    <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>-->
+<!--    <script>-->
+<!--        $( function() {-->
+<!--            $( "#sortable" ).sortable();-->
+<!--            $( "#sortable" ).disableSelection();-->
+<!--        } );-->
+<!--    </script>-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/js/select2.min.js"></script>
     <style>
         .pdL0 {
             padding-left: 0 !important;
@@ -91,6 +88,10 @@
         .download_btn{
             display:none;
         }
+        select{
+         width:300px;
+         color: #000;
+        }
         /*#sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }*/
         /*#sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }*/
         /*#sortable li span { position: absolute; margin-left: -1.3em; }*/
@@ -120,20 +121,22 @@
         <div class="form-group">
             <div class="row">
                 <label>Supplier Name</label>
-                <select class="form-control">
-                    <option>option 1</option>
-                    <option>option 2</option>
-                    <option>option 3</option>
-                    <option>option 4</option>
-                    <option>option 5</option>
-                </select>
+                <select id="soldBySelect" selected></select>
+<!--                <select class="form-control">-->
+<!--                    <option>option 1</option>-->
+<!--                    <option>option 2</option>-->
+<!--                    <option>option 3</option>-->
+<!--                    <option>option 4</option>-->
+<!--                    <option>option 5</option>-->
+<!--                </select>-->
             </div>
         </div>
         <div class="form-group">
             <div class="row">
-                <label for="invoicenumber">Invoice No.</label>
-                <input class="form-control" id="invoicenumber" placeholder="Enter invoice number"
-                       type="text">
+                <label>Invoice No.</label>
+                <select id="invoiceSelect" aria-placeholder="select supplier" selected></select>
+<!--                <input class="form-control" id="invoicenumber" placeholder="Enter invoice number"-->
+<!--                       type="text">-->
             </div>
         </div>
         <hr>
@@ -343,21 +346,20 @@
 
     <script cam-script type="text/form-script">
 		inject([ '$scope', '$http', '$window', function($scope, $http, $window) {
+            console.log("Log");
 
 		    $scope.loadImage = function (url) {
-		        // Dont use $, as $ is over shadowed by angular jquery mini and it does not contane data context
+		        // Dont use $, as $ is over shadowed by angular jquery mini and it does not contain data context
                 jQuery("#image").data("cropper").replace(url);
 		    }
 
     		camForm.on('form-loaded', function() {
-				camForm.variableManager.fetchVariable('imageUrl');
+				camForm.variableManager.fetchVariable('imageUrls');
 			});
 			camForm.on('variables-fetched', function() {
-				$scope.imageUrls = JSON.parse(camForm.variableManager.variableValue('imageUrl'));
+				$scope.imageUrls = camForm.variableManager.variableValue('imageUrls');
 			});
             camForm.on('variables-applied', function() {
-
-            console.log("Log");
 
            //document.querySelector('#image').addEventListener('ready', function () {
 
@@ -387,6 +389,10 @@
              */
 
             });
+
+
+            __form_init__();
+            __form_init_1__();
 	    }]);
 	</script>
 
@@ -407,6 +413,7 @@
 
 <script>
     var images = [];
+    console.log("Uppy");
     var uppy = Uppy.Core({
         autoProceed: false,
         allowMultipleUploads: true,
@@ -424,6 +431,7 @@
         hideAfterFinish: true
     })
     .use(Uppy.Tus, {endpoint: 'https://master.tus.io/files/'})
+    .use(Uppy.Url, {companionUrl: 'http://com.xip.io'})
     .on('upload-success', (file, response) => {
         images.push(response.uploadURL);
         $('.uploaded-files ol').empty();
@@ -441,17 +449,102 @@
     window.cropper = $('#image').data('cropper');
 
     document.querySelector('#add_content_to_uppy').addEventListener('click', () => {
-        let cropper = $('#image').data('cropper');
-        cropper.getCroppedCanvas().toBlob((blob) => {
-            uppy.addFile({
-                name: 'file_name.jpeg', // file name
-                type: 'image/jpeg', // file type
-                data: blob, // file blob
-                source: 'Local',
-                isRemote: false
-            });
-        });
+        uppy.getPlugin('Url').addFile("http://thumdor.xip.io/unsafe/161x758:260x843/http://thumdor.xip.io/unsafe/-0x0/filters:rotate(90)/http://fengyuanchen.github.io/cropper/images/picture.jpg");
+        // let cropper = $('#image').data('cropper');
+        // cropper.getCroppedCanvas().toBlob((blob) => {
+        //     uppy.addFile({
+        //         name: 'file_name.jpeg', // file name
+        //         type: 'image/jpeg', // file type
+        //         data: blob, // file blob
+        //         source: 'Local',
+        //         isRemote: false
+        //     });
+        // });
     });
+
+</script>
+<script>
+
+    function __form_init__() {
+        //[{"id":1,"name":"Arun Indane"}]
+        var soldBySelect = jQuery('#soldBySelect');
+        soldBySelect.select2({
+            ajax: {
+                delay: 250,
+                url: 'http://192.168.1.95:8000/supplier/',
+                data: function (params) {
+                    return { search: params.term };
+                },
+                processResults: function (data) {
+                    return {
+                        results:  data.map(val => { return {
+                            id: val.id,
+                            text: val.name
+                        }})
+                    };
+                },
+            }
+        });
+        function selectValue(control, endpoint, value) {
+            jquery.ajax({
+                type: 'GET',
+                url: '${endpoint}${value}/'
+            }).then(function (data) {
+                var option = new Option(data.name, data.id, true, true);
+                control.append(option).trigger('change');
+                // manually trigger the select2:select event
+                control.trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: data
+                    }
+                });
+            });
+        }
+        // selectValue(soldBySelect, 'http://192.168.1.95:8000/supplier/', 2);
+    }
+</script>
+<script>
+    function __form_init_1__() {
+        var invoiceSelect = jQuery('#invoiceSelect');
+        invoiceSelect.select2({
+            ajax: {
+                delay: 250,
+                url: 'http://192.168.1.95:8000/invoice/',
+                data: function (params) {
+                    return {
+                        sold_by: jQuery("#invoiceSelect").val(),
+                        search: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results:  data.map(val => { return {
+                            id: val.id,
+                            text: val.invoice_number
+                        }})
+                    };
+                },
+            }
+        });
+        function selectValue(control, endpoint, value) {
+            jquery.ajax({
+                type: 'GET',
+                url: '${endpoint}${value}'
+            }).then(function (data) {
+                var option = new Option(data.name, data.invoice_number, true, true);
+                control.append(option).trigger('change');
+                // manually trigger the select2:select event
+                control.trigger({
+                    type: 'select2:select',
+                    params: {
+                        data: data
+                    }
+                });
+            });
+        }
+        // selectValue(invoiceSelect, 'http://192.168.1.95:8000/invoice/', 2);
+    };
 
 </script>
 
