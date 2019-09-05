@@ -2,15 +2,12 @@ package com.invoiceapp.service;
 
 import com.invoiceapp.model.InvoiceModel;
 import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngineConfiguration;
-import org.camunda.bpm.engine.RepositoryService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.BpmnError;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
 import org.camunda.bpm.engine.runtime.Execution;
-import org.camunda.bpm.engine.runtime.MessageCorrelationBuilder;
-import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
+import org.camunda.bpm.engine.variable.Variables;
+import org.camunda.bpm.engine.variable.value.ObjectValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +33,9 @@ public class CamundaService {
         }
         Map<String, Object> processVars = new HashMap<>();
         processVars.put("invoiceRecievringDate", invoiceModel.getInvoiceDate());
-        processVars.put("imageUrls", invoiceModel.getImageUrls());
+        ObjectValue imageUrls = Variables.objectValue(invoiceModel.getImageUrls())
+                .serializationDataFormat("application/json").create();
+        processVars.put("imageUrls", imageUrls);
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Invoice_Scan_Process", processVars);
         return processInstance.getId();
     }
@@ -70,12 +69,14 @@ public class CamundaService {
 
     public String editInstanceStatusAndAcknowledgement(String invoiceNum, String status, String messageName,
                                                        boolean isAcknowleged, Date recievingDate, List<String> imageUrls){
+        ObjectValue images = Variables.objectValue(imageUrls)
+                .serializationDataFormat("application/json").create();
         runtimeService.createMessageCorrelation(messageName)
                 .processInstanceBusinessKey(invoiceNum)
                 .setVariable("status", status)
                 .setVariable("is_acknowlodged", isAcknowleged)
                 .setVariable("invoiceRecievringDate", recievingDate)
-                .setVariable("imageUrls", imageUrls)
+                .setVariable("imageUrls", images)
                 .correlateWithResult();
         return status;
     }

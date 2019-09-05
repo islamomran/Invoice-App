@@ -7,6 +7,8 @@ import org.apache.ibatis.javassist.tools.web.BadHttpRequest;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.engine.variable.Variables;
+import org.camunda.bpm.engine.variable.value.ObjectValue;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -50,7 +52,9 @@ public class InvoiceService implements JavaDelegate {
             String invoiceId = barCodeJSON.getString("id");
             delegateExecution.setVariable("invoiceId", invoiceId);
             if(imageUrls != null){
-                delegateExecution.setVariable("imageUrls", imageUrls);
+                ObjectValue images = Variables.objectValue(imageUrls)
+                        .serializationDataFormat("application/json").create();
+                delegateExecution.setVariable("imageUrls", images);
             }
         }catch (IOException ex){
             throw new BpmnError("error in executing script task : can't download the invoice image");
