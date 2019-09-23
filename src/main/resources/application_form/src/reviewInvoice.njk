@@ -1,0 +1,15 @@
+{% extends "src/base/base_editor.njk" %}
+
+{% block actions %}
+    <div class="row">
+        <div class="button box-body ">
+            <select cam-variable-name="reviewerApproval" cam-variable-type="String"
+                    required>
+                <option value="approve">Approve</option>
+                <option value="reject">Reject</option>
+                <option value="send back">Send Back For MetaData Entry</option>
+                <option value="reject request">Rejecting Pervious Acknowledgement</option>
+            </select>
+        </div>
+    </div>
+{% endblock %}

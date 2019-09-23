@@ -1,0 +1,13 @@
+{% extends "src/base/base_editor.njk" %}
+
+{% block actions %}
+    <div class="row">
+        <div class="button box-body ">
+            <select cam-variable-name="approval" required
+                    cam-variable-type="String">
+                <option value="accept">Accept</option>
+                <option value="reject">Reject</option>
+            </select>
+        </div>
+    </div>
+{% endblock %}

@@ -2,7 +2,6 @@ package com.invoiceapp.service;
 
 import com.invoiceapp.model.StateModel;
 import com.invoiceapp.repository.StateDAO;
-import javafx.application.Application;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.JavaDelegate;

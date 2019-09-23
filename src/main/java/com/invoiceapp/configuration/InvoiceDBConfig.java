@@ -29,9 +29,9 @@ public class InvoiceDBConfig {
     public DataSource invoiceDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/mydb");
+        dataSource.setUrl("jdbc:mysql://localhost:4306/mydb");
         dataSource.setUsername("root");
-        dataSource.setPassword("0122320747");
+        dataSource.setPassword("root");
 
         return dataSource;
     }

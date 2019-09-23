@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" id="Definitions_0vcznja" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="3.2.1">
+  <decision id="invoice_acknowledged_after_amendment" name="If Invoice Is Acknowlodged After Amendment">
+    <extensionElements>
+      <biodi:bounds x="150" y="150" width="180" height="80" />
+    </extensionElements>
+    <decisionTable id="decisionTable_1">
+      <input id="input_1" label="Is Invoice Already Acknowlodged">
+        <inputExpression id="inputExpression_1" typeRef="boolean">
+          <text>is_acknowlodged</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1bp8jt6" label="Has Invoice Changed">
+        <inputExpression id="LiteralExpression_1porh8u" typeRef="boolean">
+          <text>has_invoice_hash_changed</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="Is Acknowlodged" name="if_still_acknowlodged" typeRef="string" />
+      <rule id="DecisionRule_021jk3r">
+        <description>Invoice was not acknowlodged in first place</description>
+        <inputEntry id="UnaryTests_1obgvar">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_025k2gx">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0rxpqt3">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1jg2owr">
+        <description>Invoice was acknowlodged but the invoice has changed</description>
+        <inputEntry id="UnaryTests_0fucl0h">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1fbcl7b">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0dv11wb">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1er42ja">
+        <description>Invoice was acknowlodged and has not changed</description>
+        <inputEntry id="UnaryTests_0xtyjjr">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1gkikmj">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0maqyvc">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

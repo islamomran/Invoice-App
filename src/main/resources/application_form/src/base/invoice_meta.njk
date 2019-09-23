@@ -1,0 +1,60 @@
+{% raw %}
+
+<div class="box box-primary">
+    <!-- /.box-header -->
+    <!-- form start -->
+    <div class="box-body">
+        <div class="form-group">
+            <div class="row">
+                <label>Supplier Name</label>
+                <select id="soldBySelect" selected></select>
+<!--                <select class="form-control">-->
+<!--                    <option>option 1</option>-->
+<!--                    <option>option 2</option>-->
+<!--                    <option>option 3</option>-->
+<!--                    <option>option 4</option>-->
+<!--                    <option>option 5</option>-->
+<!--                </select>-->
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <label>Invoice No.</label>
+                <select id="invoiceSelect" aria-placeholder="select supplier" selected></select>
+            </div>
+        </div>
+        <hr>
+        <div class="form-group">
+            <div class="row">
+                <label for="invoicedate">Invoice Date</label>
+                <p>{{invoiceData.invoice_date}}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <label for="invoicedate">Customer Name</label>
+                <p>{{invoiceData.bill_to}}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                {{invoiceData.description_html}}
+<!--                <table class="border table">-->
+<!--                    <tr>-->
+<!--                        <th>Item</th>-->
+<!--                        <th>Quantity</th>-->
+<!--                        <th>Ammount</th>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td>Item</td>-->
+<!--                        <td>Quantity</td>-->
+<!--                        <td>Ammount</td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+            </div>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+
+{% endraw %}

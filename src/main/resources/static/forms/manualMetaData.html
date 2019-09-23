@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<meta content="text/html;charset=utf-8" http-equiv="content-type"/>
 <head>
-    <meta charset="utf-8">
-    <meta content="ie=edge" http-equiv="x-ua-compatible">
-<!--    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">-->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta content="A simple jQuery image cropping plugin." name="description">
-    <meta content="Chen Fengyuan" name="author">
-
-    <title>Invoice</title>
-
-<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">-->
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.0.0/cropper.css" rel="stylesheet">
@@ -19,13 +8,8 @@
     <link href="https://transloadit.edgly.net/releases/uppy/v1.4.0/uppy.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<!--    <script>-->
-<!--        $( function() {-->
-<!--            $( "#sortable" ).sortable();-->
-<!--            $( "#sortable" ).disableSelection();-->
-<!--        } );-->
-<!--    </script>-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/css/select2.min.css" rel="stylesheet" />
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.9/js/select2.min.js"></script>
     <style>
         .pdL0 {
@@ -69,7 +53,6 @@
             border-top-right-radius: 4px;
             border-top-left-radius: 4px;
             display: block;
-            padding: 10px 15px;
             margin-bottom: -1px;
         }
 
@@ -85,18 +68,161 @@
             background-color: #dff0d8;
             color: #3c763d;
         }
-        .download_btn{
-            display:none;
+
+        .download_btn {
+            display: none;
         }
-        select{
-         width:300px;
-         color: #000;
+
+        select {
+            width: 300px;
+            color: #000;
         }
+
+        .draft_list_group {
+            padding: 10px 15px;
+            border-left: 5px solid transparent;
+        }
+
+        .icon {
+            float: right;
+            padding: 0 5px;
+        }
+
+        .edit a, .icon button {
+            color: #000;
+        }
+
+        .icon button {
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        .list-group {
+            margin: 0;
+        }
+
+        .delete {
+            padding-top: 0px;
+            padding-right: 14px;
+            right: 20px;
+            top: 0px;
+        }
+
+        .list-group-item {
+            padding: 0 !important;
+        }
+
         /*#sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }*/
         /*#sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }*/
         /*#sortable li span { position: absolute; margin-left: -1.3em; }*/
+
+        .draft_active {
+
+        }
+
+        .draft_active .draft {
+            opacity: 1;
+        }
+
+        .draft {
+            opacity: 0;
+        }
+
+        .draft_list_group:hover .up_down_btn {
+            display: block !important;
+        }
+
+        .list-group .list_active {
+            border-left: 3px solid #b5152b;
+        }
+
+        .icon {
+            float: right;
+            padding: 0 5px;
+        }
+
+        .edit a,
+        .icon button {
+            color: #000;
+        }
+
+        .icon button {
+            padding: 0;
+            margin: 0;
+            border: 0;
+        }
+
+        .delete {
+            padding-top: 0px;
+            padding-right: 14px;
+            right: 20px;
+            top: 0px;
+        }
+
+        .list-group-item {
+            padding: 0 !important;
+        }
+
+        .container.main {
+            width: 100% !important;
+        }
+
+        .list-group li {
+            list-style: none;
+            /*border: 1px solid #ccc;*/
+            /*float: left;*/
+        }
+
+        .draft_list_group ul {
+            padding: 0;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .draft_list_group ul li {
+            display: inline-block;
+            border: 0;
+            width: auto;
+        }
+
+        /*.d_page_name {*/
+        /*    float: left;*/
+        /*}*/
+        .up_down_btn {
+            float: right;
+            display: none;
+        }
+
+        .draft_list_group button {
+            background: none;
+        }
+
+        .draft_list_group ul li:last-child {
+            float: right;
+        }
+
     </style>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.0.0/cropper.min.js"></script>
+    <script src="https://www.alpineenergy.in/public/main.js"></script>
+    <script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
+    <script src="https://www.alpineenergy.in/public/thumbor.js"></script>
+    <style>
+        .progress{
+            border:1px solid #ccc;
+            position: absolute;
+            width: 100%;
+            height: 5px!important; ;
+            top:0;
+        }
+        .tab-content{
+            position: relative;
+
+        }
+    </style>
 </head>
 
 <body class="main">
@@ -105,6 +231,7 @@
 
     <div class="container main">
         <div class="row header">
+            <div class="progress for-ProgressBar "></div>
             <div>
                 <h5>Notifications</h5>
             </div>
@@ -114,7 +241,9 @@
         <div class="row">
             <!-- invoice left start -->
             <div class="col-md-4 pd0">
-                <div class="box box-primary">
+                
+
+<div class="box box-primary">
     <!-- /.box-header -->
     <!-- form start -->
     <div class="box-body">
@@ -135,42 +264,43 @@
             <div class="row">
                 <label>Invoice No.</label>
                 <select id="invoiceSelect" aria-placeholder="select supplier" selected></select>
-<!--                <input class="form-control" id="invoicenumber" placeholder="Enter invoice number"-->
-<!--                       type="text">-->
             </div>
         </div>
         <hr>
         <div class="form-group">
             <div class="row">
                 <label for="invoicedate">Invoice Date</label>
-                <p>12-12-19</p>
+                <p>{{invoiceData.invoice_date}}</p>
             </div>
         </div>
         <div class="form-group">
             <div class="row">
                 <label for="invoicedate">Customer Name</label>
-                <p>Ranbir Steel Industry</p>
+                <p>{{invoiceData.bill_to}}</p>
             </div>
         </div>
         <div class="form-group">
             <div class="row">
-                <table class="border table">
-                    <tr>
-                        <th>Item</th>
-                        <th>Quantity</th>
-                        <th>Ammount</th>
-                    </tr>
-                    <tr>
-                        <td>Item</td>
-                        <td>Quantity</td>
-                        <td>Ammount</td>
-                    </tr>
-                </table>
+                {{invoiceData.description_html}}
+<!--                <table class="border table">-->
+<!--                    <tr>-->
+<!--                        <th>Item</th>-->
+<!--                        <th>Quantity</th>-->
+<!--                        <th>Ammount</th>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td>Item</td>-->
+<!--                        <td>Quantity</td>-->
+<!--                        <td>Ammount</td>-->
+<!--                    </tr>-->
+<!--                </table>-->
             </div>
         </div>
     </div>
     <!-- /.box-body -->
 </div>
+
+
             </div>
             <!-- invoice left end -->
             <!-- invoice right block start -->
@@ -193,8 +323,9 @@
                                             </button>
                                             <button class="btn btn-primary" data-method="zoom" data-option="-0.1"
                                                     title="Zoom Out" type="button">
-                                                  <span class="docs-tooltip" data-animation="false" data-toggle="tooltip"
-                                                      title="$().cropper(&quot;zoom&quot;, -0.1)">
+                                                  <span class="docs-tooltip" data-animation="false"
+                                                        data-toggle="tooltip"
+                                                        title="$().cropper(&quot;zoom&quot;, -0.1)">
                                                     <span class="fa fa-search-minus"></span>
                                                 </span>
                                             </button>
@@ -218,25 +349,27 @@
                                             </button>
                                         </div>
                                         <div class="btn-group">
-                                            <button class="btn btn-primary" data-method="scaleY" data-option="-1"
-                                                    title="Flip Vertical" type="button">
-                                                <span class="docs-tooltip" data-animation="false"
-                                                      data-toggle="tooltip"
-                                                      title="$().cropper(&quot;scaleY&quot;, -1)">
-                                                    <span class="fa fa-arrows-v"></span>
-                                                </span>
+                                            <button type="button" class="btn btn-primary" data-method="crop" title="Crop">
+                                               <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;crop&quot;)">
+                                                 <span class="fa fa-crop"></span>
+                                               </span>
+                                            </button>
+                                            <button type="button" class="btn btn-primary" data-method="clear" title="Clear">
+                                               <span class="docs-tooltip" data-toggle="tooltip" data-animation="false" title="$().cropper(&quot;clear&quot;)">
+                                                 <span class="fa fa-remove"></span>
+                                               </span>
                                             </button>
                                         </div>
-                                        <div class="btn-group">
-                                            <button class="btn btn-primary" data-method="crop" title="Crop"
-                                                    type="button">
-                                                <span class="docs-tooltip" data-animation="false"
-                                                      data-toggle="tooltip"
-                                                      title="$().cropper(&quot;crop&quot;)">
-                                                    <span class="fa fa-check"></span>
-                                                </span>
-                                            </button>
-                                        </div>
+<!--                                        <div class="btn-group">-->
+<!--                                            <button class="btn btn-primary" data-method="scaleY" data-option="-1"-->
+<!--                                                    title="Flip Vertical" type="button">-->
+<!--                                                <span class="docs-tooltip" data-animation="false"-->
+<!--                                                      data-toggle="tooltip"-->
+<!--                                                      title="$().cropper(&quot;scaleY&quot;, -1)">-->
+<!--                                                    <span class="fa fa-arrows-v"></span>-->
+<!--                                                </span>-->
+<!--                                            </button>-->
+<!--                                        </div>-->
                                         <div class="btn-group">
                                             <button class="btn btn-primary" data-method="reset" title="Reset"
                                                     type="button">
@@ -248,7 +381,7 @@
                                             </button>
                                         </div>
                                         <div class="btn-group">
-                                            <button class="btn btn-primary" id="add_content_to_uppy"
+                                            <button class="btn btn-primary" ng-click="updateImages()"
                                                     type="button">
                                                 save
                                             </button>
@@ -260,64 +393,83 @@
                                     <div class="col-md-12 pd0">
                                         <!-- <h3>Demo:</h3> -->
                                         <div class="img-container">
-                                            <img alt="Picture" id="image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=">
+                                            <img alt="Picture" id="image"
+                                                 src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=">
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- uppy file upload -->
-                                <div class="row MT10">
-                                    <div class="col-md-10 ">
-                                        <div class="for-ProgressBar "></div>
-                                        <div class="uploaded-files ">
-                                            <h5>Files to be updated:</h5>
-                                            <ol></ol>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2 pd0">
-                                        <div class="row">
-                                             <div class="btn-group right">
-                                                <a class="btn btn-primary download_btn" download="cropped.html"
-                                                   href="javascript:void(0);"
-                                                   id="download"></a>
-                                                <Updatea class="btn btn-primary" download="cropped.html"
-                                                   href="javascript:void(0);"
-                                                   id="upload-uppy">Update</Updatea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+<!--                                <div class="row MT10">-->
+<!--                                    <div class="col-md-10 ">-->
+
+<!--                                        <div class="uploaded-files ">-->
+<!--                                            <h5>Files to be updated:</h5>-->
+<!--                                            <ol></ol>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                    <div class="col-md-2 pd0">-->
+<!--                                        <div class="row">-->
+<!--                                            <div class="btn-group right">-->
+<!--                                                <a class="btn btn-primary download_btn" download="cropped.html"-->
+<!--                                                   href="javascript:void(0);"-->
+<!--                                                   id="download"></a>-->
+<!--                                                <Updatea class="btn btn-primary" download="cropped.html"-->
+<!--                                                         href="javascript:void(0);"-->
+<!--                                                         id="upload-uppy">Update-->
+<!--                                                </Updatea>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
                             </div>
                             <!-- Content end here -->
                         </div>
                         <div class="col-md-4">
                             
-                            <div class="box-body">
-                                <h5 class="heading">List of Invoice</h5>
-
-                                <ul class="list-group" id="sortable">
-                                    <li class="ui-state-default list-group-item"
-                                        data-ng-repeat="imagesrc in imageUrls"
-                                        ng-click="loadImage(imagesrc)">
-                                        <span class="handle ui-sortable-handle">
-                                            <i class="fa fa-ellipsis-v"></i>
-                                            <i class="fa fa-ellipsis-v"></i>
-                                        </span>
-                                        <span id="image-{{$index}}" class="text">Page-{{$index + 1}}</span>
-                                    </li>
-                                </ul>
-<!--                                <ul class="list-group" id="sortable">-->
-<!--                                    <li-->
-<!--                                        class="ui-state-default list-group-item"-->
-<!--                                        data-ng-repeat="imagesrc in imageUrls"-->
-<!--                                        ng-click="loadImage(imagesrc)">-->
-<!--                                        <span class="handle ui-sortable-handle">-->
-<!--                                            <i class="fa fa-ellipsis-v"></i>-->
-<!--                                            <i class="fa fa-ellipsis-v"></i>-->
-<!--                                        </span>-->
-<!--                                        <span id="image-{{$index}}" class="text">Page-{{$index + 1}}</span>-->
-<!--                                    </li>-->
-<!--                                </ul>-->
+                            <div class="row">
+                                <div class="box-body">
+                                    <ul class="list-group">
+                                        <li
+                                                class="ui-state-default list-group-item"
+                                                ng-class="{
+                                                            'draft_active': imageObj.state.isDraft,
+                                                            'list_active': imageStack.activeIndex == $index
+                                                        }"
+                                                data-ng-repeat="imageObj in imageStack.stack"
+                                        >
+                                            <div class="draft_list_group" class="draft_list_group">
+                                                <ul>
+                                                    <li class="d_page_name"
+                                                        ng-click="imageEditorController.loadIndex($index)">
+                                                        <div class="text">{{imageObj.state.label}}</div>
+                                                    </li>
+                                                    <li class="draft red">
+                                                        <span class="red">(draft)</span>
+                                                        <div class="icon">
+                                                            <button ng-click="imageObj.discardDraft()"><i
+                                                                    class="fa fa-trash-o red"></i></button>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="up_down_btn">
+                                                            <div class="icon">
+                                                                <button ng-click="imageStack.moveDown($index)">
+                                                                    <i class="fa fa-arrow-down"></i>
+                                                                </button>
+                                                            </div>
+                                                            <div class="icon">
+                                                                <button ng-click="imageStack.moveUp($index)">
+                                                                    <i class="fa fa-arrow-up"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             
 
@@ -344,125 +496,369 @@
 
     </div>
 
+    <script>
+
+        function ImageObject(imageUrl, label) {
+            return (function () {
+                console.log(`Constructor: ImageObject`);
+
+                let obj = {};
+                obj.state = {
+                    label: label,
+                    url: imageUrl,
+                    isDraft: false,
+                    cropperData: {}
+                };
+
+                obj.discardDraft = () => {
+                    obj.state.isDraft = false;
+                    obj.state.cropperData = {};
+                };
+
+                obj.updateUrl = (url) => {
+                    obj.state.url = url;
+                    obj.discardDraft();
+                };
+
+                obj.setDraft = (cropperData) => {
+                    obj.state.isDraft = true;
+                    obj.state.cropperData = cropperData;
+                };
+
+                obj.getDraftData = () => {
+                    return obj.state.cropperData;
+                };
+
+                return obj;
+            })();
+        }
+
+        function ImageStack(imageUrls) {
+            return (function () {
+                console.log(`Constructor: ImageStack`);
+
+                function arraymove(arr, fromIndex, toIndex) {
+                    var element = arr[fromIndex];
+                    arr.splice(fromIndex, 1);
+                    arr.splice(toIndex, 0, element);
+                }
+
+                let obj = {};
+
+                obj.activeIndex = -1;
+                obj.frozen = false;
+
+                obj.stack = imageUrls.map(
+                    (url, index) => ImageObject(url, `Page ${String.fromCharCode(65 + index)}`)
+                );
+                obj.moveUp = (index) => {
+                    // If frozen, dont operate
+                    if (obj.frozen) return;
+                    // Already on the top
+                    if (index <= 0) return;
+                    arraymove(obj.stack, index, index - 1);
+                    if (index === obj.activeIndex) obj.activeIndex = index - 1;
+                };
+                obj.moveDown = (index) => {
+                    // If frozen, dont operate
+                    if (obj.frozen) return;
+                    // Already on the bottom
+                    if (index >= obj.stack.length - 1) return;
+                    arraymove(obj.stack, index, index + 1);
+                    if (index === obj.activeIndex) obj.activeIndex = index + 1;
+                };
+                obj.setActiveIndex = (index) => {
+                    obj.activeIndex = index;
+                };
+                obj.setFrozen = (frozen) => {
+                    obj.frozen = frozen;
+                };
+
+                return obj;
+            })();
+        }
+
+        function ImageEditorController(cropper, stack, thumborTransformer, uppyController) {
+            return (function () {
+                console.log(`Constructor: ImageEditorController`);
+
+                function saveDraftIfApplicable() {
+                    if (stack.activeIndex === -1) return;
+                    // If the cropper has edits, save then and update draft, else if image already has draft and cropper
+                    // has not edits now, clear draft status.
+                    let activeObj = stack.stack[stack.activeIndex];
+                    if (cropper.isDirty()) {
+                        activeObj.setDraft(cropper.getData());
+                    } else if (activeObj.state.isDraft) {
+                        activeObj.discardDraft();
+                    }
+                }
+
+                function __loadIndex(index) {
+                    let activeObj = stack.stack[index];
+                    let data = activeObj.state.isDraft ? activeObj.getDraftData() : {};
+                    cropper.loadImage(activeObj.state.url, data);
+                }
+
+                let obj = {};
+
+                obj.loadIndex = (index) => {
+                    // Return if the said index is already loaded
+                    if (stack.activeIndex === index) return;
+
+                    saveDraftIfApplicable();
+                    stack.setActiveIndex(index);
+                    __loadIndex(index);
+                };
+
+                obj.updateAllImages = () => {
+                    stack.setFrozen(true);
+
+                    saveDraftIfApplicable();
+
+                    let indexMap = [];
+                    let urlList = [];
+                    stack.stack.forEach((imgObj, index) => {
+                        if (imgObj.state.isDraft) {
+                            indexMap.push(index);
+                            urlList.push(thumborTransformer.transform(imgObj.state.url, imgObj.getDraftData()));
+                        }
+                    });
+
+                    uppyController.addUrlsAndUpload(urlList).then(results => {
+                        if (results.failed.length > 0) {
+                            window.alert("Error Uploading");
+                            throw new Error("Error Uploading");
+                        }
+
+                        results.successful.forEach((uploadedFile, index) => {
+                            let imageObj = stack.stack[indexMap[index]];
+                            imageObj.updateUrl(uploadedFile.uploadURL);
+                        });
+
+                        // If the updated images is currently loaded, refresh the cropper
+                        if (indexMap.indexOf(stack.activeIndex) >= 0) {
+                            __loadIndex(stack.activeIndex);
+                        }
+                    }).finally(() => {
+                        stack.setFrozen(false);
+                    });
+
+                };
+
+                obj.getImages = () => {
+                    return stack.stack.map(imgObj => imgObj.state.url);
+                };
+
+                return obj;
+            })();
+        }
+
+        function Cropper(jqDomSearchString) {
+            return (function () {
+                console.log(`Constructor: Cropper`);
+                let obj = {};
+
+                function getCropper() {
+                    if (!obj.cropper) {
+                        obj.img = jQuery(jqDomSearchString);
+                        obj.cropper = obj.img.data("cropper");
+                    }
+                    return obj.cropper;
+                }
+
+                obj.loadImage = (url, data) => {
+                    getCropper().replace(url, false);
+
+                    // If data is provided, load the image first and wait for cropper to be ready, afterwards set data
+                    if (data) {
+                        setTimeout(() => {
+                            let __listener = function () {
+                                obj.setData(data);
+                                obj.img[0].removeEventListener('ready', __listener);
+                            };
+                            obj.img[0].addEventListener('ready', __listener);
+                        }, 0);
+                    }
+                };
+
+                obj.getData = () => {
+                    return getCropper().getData();
+                };
+
+                obj.setData = (data) => {
+                    getCropper().setData(data);
+                };
+
+                obj.isDirty = () => {
+                    // If the cropper is turned on or image is flipped or rotated
+                    let data = obj.getData();
+                    let hasCrop = !(data.width === 0 && data.height === 0);
+                    let hasRotation = data.rotate != 0;
+                    let hasFlip = data.scaleX != '1' || data.scaleY != '1';
+                    return hasCrop || hasRotation || hasFlip;
+                };
+
+                return obj;
+            })();
+        }
+
+        function UppyController(config) {
+            return (function () {
+                let obj = {};
+
+                obj.uppy = Uppy.Core({
+                    autoProceed: false,
+                    allowMultipleUploads: true,
+                    debug: false,
+                    restrictions: {
+                        maxFileSize: null,
+                        maxNumberOfFiles: null,
+                        minNumberOfFiles: null,
+                        allowedFileTypes: null
+                    },
+                    meta: {}
+                })
+                    .use(Uppy.ProgressBar, {
+                        target: '.for-ProgressBar',
+                        hideAfterFinish: true
+                    })
+                    .use(Uppy.Tus, {endpoint: config.tus,})
+                    .use(Uppy.Url, {companionUrl: config.companion});
+
+                obj.addUrl = (url) => {
+                    return obj.uppy.getPlugin('Url').addFile(url);
+                };
+
+                obj.upload = () => {
+                    return obj.uppy.upload();
+                };
+
+                obj.addUrlsAndUpload = (urls) => {
+                    let addFilePromiseList = urls.map(url => obj.addUrl(url));
+                    return Promise.all(addFilePromiseList).then(() => {
+                        return obj.upload();
+                    });
+                };
+
+                return obj;
+            })();
+        }
+
+        function ThumborCropperTransformer(config) {
+            return (function () {
+                let obj = {};
+
+                obj.transform = (imageUrl, data) => {
+                    const thumbor = new ThumborJS(config.url, null);
+                    let url = thumbor.imgpath(imageUrl);
+                    if (data.scaleX === -1) url.hflip();
+                    if (data.scaleY === -1) url.vflip();
+                    if (data.rotate) {
+                        let rotMul = -1; //data.scaleY === -1 || data.scaleX === -1 ? -1 : 1;
+                        url.filter(`frotate(${rotMul * data.rotate})`);
+                    }
+                    if (!(data.width == 0 || data.height == 0)) {
+                        url = thumbor.imgpath(url.genurl());
+                        url.crop(
+                            Math.max(Math.floor(data.x), 0),
+                            Math.max(Math.floor(data.y), 0),
+                            Math.ceil(data.x + data.width),
+                            Math.ceil(data.y + data.height)
+                        );
+                    }
+                    return url.genurl();
+                };
+
+                return obj;
+            })();
+        }
+
+    </script>
+
     <script cam-script type="text/form-script">
-		inject([ '$scope', '$http', '$window', function($scope, $http, $window) {
+
+
+		inject([ '$scope', '$http', '$window', '$sce', function($scope, $http, $window, $sce) {
             console.log("Log");
 
-		    $scope.loadImage = function (url) {
-		        // Dont use $, as $ is over shadowed by angular jquery mini and it does not contain data context
-                jQuery("#image").data("cropper").replace(url);
-		    }
+		    $scope.updateImages = () => {
+		        $scope.imageEditorController.updateAllImages();
+		    };
 
     		camForm.on('form-loaded', function() {
 				camForm.variableManager.fetchVariable('imageUrls');
+				camForm.variableManager.fetchVariable('manualDataEntry');
 			});
-			camForm.on('variables-fetched', function() {
-				$scope.imageUrls = camForm.variableManager.variableValue('imageUrls');
-			});
-            camForm.on('variables-applied', function() {
 
-           //document.querySelector('#image').addEventListener('ready', function () {
+			camForm.on('variables-restored', function() {
+
+                let images = camForm.variableManager.variableValue('imageUrls');
+                $scope.imageStack = ImageStack(images);
+
+				setTimeout(() => {
+                    $scope.imageEditorController = ImageEditorController(
+                        Cropper("#image"),
+                        $scope.imageStack,
+                        ThumborCropperTransformer({url: 'http://thumdor.xip.io'}),
+                        UppyController({companion: 'http://com.xip.io', tus: 'http://tusd.xip.io/files/'})
+                    );
+                }, 0);
 
 
-            setTimeout(() => {
-                $scope.loadImage($scope.imageUrls[0]);
-            }, 0);
+                setTimeout(() => {
+                    __form_init__();
+                    __form_init_1__();
 
-            //});
-
-            /*    $scope.mapOptions = {
-                    zoom:15,
-                    center:{
-                      lat:parseFloat($scope.fulfilment.latitude),
-                      lng:parseFloat($scope.fulfilment.longitude)
+                    $scope.manualDataEntry = camForm.variableManager.variables.manualDataEntry;
+                    if (!camForm.variableManager.variables.manualDataEntry) {
+                        camForm.variableManager.createVariable({
+                            name: 'manualDataEntry',
+                            type: 'json',
+                            value: {},
+                            isDirty: false
+                        });
                     }
-                };
-                $scope.map = new google.maps.Map(document.getElementById('map'), $scope.mapOptions);
-                $scope.marker = new google.maps.Marker({
-                    position: {
-                      lat:parseFloat($scope.fulfilment.latitude),
-                      lng:parseFloat($scope.fulfilment.longitude)
-                    },
-                    map: $scope.map,
-                    title: $scope.fulfilment.customer.name,
-                });
-             */
+                    $scope.manualDataEntry = camForm.variableManager.variableValue('manualDataEntry') || {};
 
+                }, 0);
+
+			});
+
+			function storeVariables() {
+                camForm.variableManager.variableValue('imageUrls', $scope.imageEditorController.getImages());
+                camForm.variableManager.variableValue('manualDataEntry', $scope.manualDataEntry);
+			}
+
+            camForm.on('store', function(evt) {
+                storeVariables();
             });
 
+            camForm.on('submit', function(evt) {
+              storeVariables();
+            });
 
-            __form_init__();
-            __form_init_1__();
+            $scope.invoiceService = InvoiceService($http, $sce, {url: 'http://192.168.1.95:8000'});
+
+
+            function loadInvoiceData(supplierId, invoiceNumber) {
+                $scope.manualDataEntry = {supplierId: supplierId, invoiceNumber: invoiceNumber};
+                $scope.invoiceData = {};
+                $scope.invoiceService.loadInvoiceData(supplierId, invoiceNumber).then(res => {
+                    $scope.invoiceData = res;
+                });
+            }
+
+            $window.loadInvoiceData = loadInvoiceData;
 	    }]);
-	</script>
+
+
+    </script>
 
 </form>
 
-
-
-
-<!-- wrapper end here -->
 </body>
 
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.0.0/cropper.min.js"></script>
-<!--<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
-<script src="https://www.alpineenergy.in/public/main.js"></script>
-<script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
-
-<script>
-    var images = [];
-    console.log("Uppy");
-    var uppy = Uppy.Core({
-        autoProceed: false,
-        allowMultipleUploads: true,
-        debug: false,
-        restrictions: {
-            maxFileSize: null,
-            maxNumberOfFiles: null,
-            minNumberOfFiles: null,
-            allowedFileTypes: null
-        },
-        meta: {}
-    })
-    .use(Uppy.ProgressBar, {
-        target: '.for-ProgressBar',
-        hideAfterFinish: true
-    })
-    .use(Uppy.Tus, {endpoint: 'https://master.tus.io/files/'})
-    .use(Uppy.Url, {companionUrl: 'http://com.xip.io'})
-    .on('upload-success', (file, response) => {
-        images.push(response.uploadURL);
-        $('.uploaded-files ol').empty();
-    }).on('file-added', (file) => {
-        $('.uploaded-files ol').append(`<li id="${file.name}">${file.name}</li>`);
-    });
-    // .on('file-removed', (file) => {
-    //     console.log('Removed file', file)
-    // });
-
-    document.querySelector('#upload-uppy').addEventListener('click', () => {
-        uppy.upload();
-    });
-
-    window.cropper = $('#image').data('cropper');
-
-    document.querySelector('#add_content_to_uppy').addEventListener('click', () => {
-        uppy.getPlugin('Url').addFile("http://thumdor.xip.io/unsafe/161x758:260x843/http://thumdor.xip.io/unsafe/-0x0/filters:rotate(90)/http://fengyuanchen.github.io/cropper/images/picture.jpg");
-        // let cropper = $('#image').data('cropper');
-        // cropper.getCroppedCanvas().toBlob((blob) => {
-        //     uppy.addFile({
-        //         name: 'file_name.jpeg', // file name
-        //         type: 'image/jpeg', // file type
-        //         data: blob, // file blob
-        //         source: 'Local',
-        //         isRemote: false
-        //     });
-        // });
-    });
-
-</script>
 <script>
 
     function __form_init__() {
@@ -473,18 +869,21 @@
                 delay: 250,
                 url: 'http://192.168.1.95:8000/supplier/',
                 data: function (params) {
-                    return { search: params.term };
+                    return {search: params.term};
                 },
                 processResults: function (data) {
                     return {
-                        results:  data.map(val => { return {
-                            id: val.id,
-                            text: val.name
-                        }})
+                        results: data.map(val => {
+                            return {
+                                id: val.id,
+                                text: val.name
+                            }
+                        })
                     };
                 },
             }
         });
+
         function selectValue(control, endpoint, value) {
             jquery.ajax({
                 type: 'GET',
@@ -501,6 +900,7 @@
                 });
             });
         }
+
         // selectValue(soldBySelect, 'http://192.168.1.95:8000/supplier/', 2);
     }
 </script>
@@ -519,14 +919,17 @@
                 },
                 processResults: function (data) {
                     return {
-                        results:  data.map(val => { return {
-                            id: val.id,
-                            text: val.invoice_number
-                        }})
+                        results: data.map(val => {
+                            return {
+                                id: val.id,
+                                text: val.invoice_number
+                            }
+                        })
                     };
                 },
             }
         });
+
         function selectValue(control, endpoint, value) {
             jquery.ajax({
                 type: 'GET',
@@ -534,6 +937,7 @@
             }).then(function (data) {
                 var option = new Option(data.name, data.invoice_number, true, true);
                 control.append(option).trigger('change');
+
                 // manually trigger the select2:select event
                 control.trigger({
                     type: 'select2:select',
@@ -541,11 +945,48 @@
                         data: data
                     }
                 });
+
             });
         }
-        // selectValue(invoiceSelect, 'http://192.168.1.95:8000/invoice/', 2);
-    };
 
+        // selectValue(invoiceSelect, 'http://192.168.1.95:8000/invoice/', 2);
+
+        invoiceSelect.on('select2:select', function (e) {
+            let data = e.params.data;
+            window.loadInvoiceData(jQuery("#invoiceSelect").val(), data.invoice_number);
+        });
+
+        // .trigger({
+        //     type: 'select2:select',
+        //     params: {
+        //         data: data
+        //     }
+        // });
+
+    }
+
+</script>
+
+
+<script>
+    function InvoiceService($http, $sce, config) {
+        return (function () {
+            let obj = {};
+
+            obj.loadInvoiceData = (supplierId, invoiceNumber) => {
+                // config => {method: 'GET',url: '/someUrl'}
+                // $http.get('/someUrl', config).then(successCallback, errorCallback);
+                // $http.post('/someUrl', data, config).then(successCallback, errorCallback);
+                return $http.get(`${config.url}/invoice/`, {
+                    params: { sold_by: supplierId, invoiceNumber: 12}
+                }).then(res => {
+                    return res.data.length == 1?res.data[0]:[];
+                });
+            };
+
+            return obj;
+        })();
+    }
 </script>
 
 </html>

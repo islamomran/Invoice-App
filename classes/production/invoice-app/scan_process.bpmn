@@ -67,7 +67,7 @@ We can only Approve the process if the overall state is in the Acknowledgement P
     </bpmn:userTask>
     <bpmn:endEvent id="EndEvent_Approve" name="Approve">
       <bpmn:incoming>SequenceFlow_0m8em2i</bpmn:incoming>
-      <bpmn:messageEventDefinition />
+      <bpmn:messageEventDefinition camunda:delegateExpression="${childProcessService}" />
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0pj9akz" sourceRef="Task_Read_Metadata" targetRef="Task_Review_Scan" />
     <bpmn:sequenceFlow id="SequenceFlow_1rfyjpg" sourceRef="BoundaryEvent_017x8ot" targetRef="Task_Invoice_DataEntry" />

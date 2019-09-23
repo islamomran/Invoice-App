@@ -17,9 +17,9 @@ public class CamundaDBConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/camunda");
+        dataSource.setUrl("jdbc:mysql://localhost:4306/camunda");
         dataSource.setUsername("root");
-        dataSource.setPassword("0122320747");
+        dataSource.setPassword("root");
 
         return dataSource;
     }

@@ -241,66 +241,7 @@
         <div class="row">
             <!-- invoice left start -->
             <div class="col-md-4 pd0">
-                
-
-<div class="box box-primary">
-    <!-- /.box-header -->
-    <!-- form start -->
-    <div class="box-body">
-        <div class="form-group">
-            <div class="row">
-                <label>Supplier Name</label>
-                <select id="soldBySelect" selected></select>
-<!--                <select class="form-control">-->
-<!--                    <option>option 1</option>-->
-<!--                    <option>option 2</option>-->
-<!--                    <option>option 3</option>-->
-<!--                    <option>option 4</option>-->
-<!--                    <option>option 5</option>-->
-<!--                </select>-->
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="row">
-                <label>Invoice No.</label>
-                <select id="invoiceSelect" aria-placeholder="select supplier" selected></select>
-            </div>
-        </div>
-        <hr>
-        <div class="form-group">
-            <div class="row">
-                <label for="invoicedate">Invoice Date</label>
-                <p>{{invoiceData.invoice_date}}</p>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="row">
-                <label for="invoicedate">Customer Name</label>
-                <p>{{invoiceData.bill_to}}</p>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="row">
-                {{invoiceData.description_html}}
-<!--                <table class="border table">-->
-<!--                    <tr>-->
-<!--                        <th>Item</th>-->
-<!--                        <th>Quantity</th>-->
-<!--                        <th>Ammount</th>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Item</td>-->
-<!--                        <td>Quantity</td>-->
-<!--                        <td>Ammount</td>-->
-<!--                    </tr>-->
-<!--                </table>-->
-            </div>
-        </div>
-    </div>
-    <!-- /.box-body -->
-</div>
-
-
+                {% include "src/base/invoice_meta.njk" %}
             </div>
             <!-- invoice left end -->
             <!-- invoice right block start -->
@@ -426,7 +367,7 @@
                             <!-- Content end here -->
                         </div>
                         <div class="col-md-4">
-                            
+                            {% raw %}
                             <div class="row">
                                 <div class="box-body">
                                     <ul class="list-group">
@@ -471,7 +412,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            
+                            {% endraw %}
 
                         </div>
                     </div>
@@ -482,19 +423,9 @@
 
         <hr>
 
-        
-    <div class="row">
-        <div class="button box-body ">
-            <select cam-variable-name="reviewerApproval" cam-variable-type="String"
-                    required>
-                <option value="approve">Approve</option>
-                <option value="reject">Reject</option>
-                <option value="send back">Send Back For MetaData Entry</option>
-                <option value="reject request">Rejecting Pervious Acknowledgement</option>
-            </select>
-        </div>
-    </div>
-
+        {% block actions %}
+        These are possible actions
+        {% endblock %}
 
     </div>
 
@@ -812,7 +743,6 @@
                     __form_init__();
                     __form_init_1__();
 
-                    $scope.manualDataEntry = camForm.variableManager.variables.manualDataEntry;
                     if (!camForm.variableManager.variables.manualDataEntry) {
                         camForm.variableManager.createVariable({
                             name: 'manualDataEntry',
@@ -907,6 +837,45 @@
     }
 </script>
 <script>
+
+    function AutoCompleteFormControl(options) {
+        return (function () {
+            let opt = Object.assign({
+                delay: 250
+
+            }, options);
+
+            let obj = {};
+
+            obj.control = jQuery(`#${options.id}`);
+
+            obj.control.select2({
+                ajax: {
+                    delay: opt.delay,
+                    url: 'http://192.168.1.95:8000/invoice/',
+                    data: function (params) {
+                        return {
+                            sold_by: jQuery("#invoiceSelect").val(),
+                            search: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(val => {
+                                return {
+                                    id: val.id,
+                                    text: val.invoice_number
+                                }
+                            })
+                        };
+                    },
+                }
+            });
+
+            return obj;
+        })();
+    }
+
     function __form_init_1__() {
         var invoiceSelect = jQuery('#invoiceSelect');
         invoiceSelect.select2({

@@ -140,11 +140,12 @@
       .use(Uppy.ProgressBar, {
         target: '.for-ProgressBar', hideAfterFinish: false
       })
-      .use(Uppy.Tus, {endpoint: 'https://master.tus.io/files/'})
+      .use(Uppy.Tus, {endpoint: 'https://master.tus.io/files/'});
+
 	  uppy.on('upload-success', (file, response)=>{
             imageUrls.push(response.uploadURL);
 			console.log(response.uploadURL);
-	  })
+	  });
 	
 	function submit(){
 		invoiceDate = document.getElementById("nombre");
