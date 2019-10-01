@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/invoice")
 public class InvoiceController {
@@ -18,7 +20,8 @@ public class InvoiceController {
 
     @PostMapping
     @CrossOrigin()
-    public String submitInvoice(@RequestBody InvoiceModel invoiceModel){
+    public String submitInvoice(@RequestBody InvoiceModel invoiceModel, Principal principal){
+        invoiceModel.setCreator(principal.getName());
         return this.invoiceService.instantiateInvoiceInstance(invoiceModel);
     }
 }

@@ -10,6 +10,7 @@ public class InvoiceModel {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date invoiceDate;
     private List<String> imageUrls;
+    private String creator;
 
     public void setInvoiceDate(Date invoiceDate){
         this.invoiceDate = invoiceDate;
@@ -27,5 +28,11 @@ public class InvoiceModel {
         return this.imageUrls;
     }
 
+    public String getCreator() {
+        return creator;
+    }
 
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 }

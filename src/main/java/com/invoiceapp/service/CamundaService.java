@@ -33,6 +33,7 @@ public class CamundaService {
         }
         Map<String, Object> processVars = new HashMap<>();
         processVars.put("invoiceRecievringDate", invoiceModel.getInvoiceDate());
+        processVars.put("creator", invoiceModel.getCreator());
         ObjectValue imageUrls = Variables.objectValue(invoiceModel.getImageUrls())
                 .serializationDataFormat("application/json").create();
         processVars.put("imageUrls", imageUrls);
