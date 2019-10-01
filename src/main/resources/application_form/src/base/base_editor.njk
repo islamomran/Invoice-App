@@ -222,11 +222,19 @@
             position: relative;
 
         }
+        .form-group p{
+            margin:0;
+        }
+        .MT20{
+            margin-top: 20px;
+        }
+        .page_list{
+            min-height: 200px;
+        }
     </style>
 </head>
 
 <body class="main">
-
 <form role="form">
 
     <div class="container main">
@@ -369,10 +377,9 @@
                         <div class="col-md-4">
                             {% raw %}
                             <div class="row">
-                                <div class="box-body">
+                                <div class="box-body page_list">
                                     <ul class="list-group">
-                                        <li
-                                                class="ui-state-default list-group-item"
+                                        <li class="ui-state-default list-group-item"
                                                 ng-class="{
                                                             'draft_active': imageObj.state.isDraft,
                                                             'list_active': imageStack.activeIndex == $index
@@ -410,6 +417,25 @@
                                             </div>
                                         </li>
                                     </ul>
+                                </div>
+                                <div class="box-body MT20">
+                                    <div class="form-group">
+                                            <label for="created_date">Created Date</label>
+                                            <p>{{invoiceData.created_date}}</p>
+                                    </div>
+                                    <div class="form-group">
+                                            <label for="created_by">Created by</label>
+                                            <p>{{invoiceData.created_by}}</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                            <label for="reviwed_date">Reviwed Date</label>
+                                            <p>{{invoiceData.reviwed_date}}</p>
+                                    </div>
+                                    <div class="form-group">
+                                            <label for="reviwed_by">Reviwed by</label>
+                                            <p>{{invoiceData.reviwed_by}}</p>
+                                    </div>
                                 </div>
                             </div>
                             {% endraw %}
