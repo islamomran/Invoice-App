@@ -222,6 +222,15 @@
             position: relative;
 
         }
+        .form-group p{
+            margin:0;
+        }
+        .MT20{
+            margin-top: 20px;
+        }
+        .page_list{
+            min-height: 200px;
+        }
     </style>
 </head>
 
@@ -251,13 +260,6 @@
             <div class="row">
                 <label>Supplier Name</label>
                 <select id="soldBySelect" selected></select>
-<!--                <select class="form-control">-->
-<!--                    <option>option 1</option>-->
-<!--                    <option>option 2</option>-->
-<!--                    <option>option 3</option>-->
-<!--                    <option>option 4</option>-->
-<!--                    <option>option 5</option>-->
-<!--                </select>-->
             </div>
         </div>
         <div class="form-group">
@@ -267,6 +269,7 @@
             </div>
         </div>
         <hr>
+
         <div class="form-group">
             <div class="row">
                 <label for="invoicedate">Invoice Date</label>
@@ -281,19 +284,22 @@
         </div>
         <div class="form-group">
             <div class="row">
+                <label for="supplier_name">Supplier Name</label>
+                <p>{{invoiceData.invoice_date}}</p>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <label for="invoice_no">Invoice No.</label>
+                <p>{{invoiceData.bill_to}}</p>
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <div class="row">
                 {{invoiceData.description_html}}
-<!--                <table class="border table">-->
-<!--                    <tr>-->
-<!--                        <th>Item</th>-->
-<!--                        <th>Quantity</th>-->
-<!--                        <th>Ammount</th>-->
-<!--                    </tr>-->
-<!--                    <tr>-->
-<!--                        <td>Item</td>-->
-<!--                        <td>Quantity</td>-->
-<!--                        <td>Ammount</td>-->
-<!--                    </tr>-->
-<!--                </table>-->
             </div>
         </div>
     </div>
@@ -428,10 +434,9 @@
                         <div class="col-md-4">
                             
                             <div class="row">
-                                <div class="box-body">
+                                <div class="box-body page_list">
                                     <ul class="list-group">
-                                        <li
-                                                class="ui-state-default list-group-item"
+                                        <li class="ui-state-default list-group-item"
                                                 ng-class="{
                                                             'draft_active': imageObj.state.isDraft,
                                                             'list_active': imageStack.activeIndex == $index
@@ -469,6 +474,25 @@
                                             </div>
                                         </li>
                                     </ul>
+                                </div>
+                                <div class="box-body MT20">
+                                    <div class="form-group">
+                                            <label for="created_date">Created Date</label>
+                                            <p>{{invoiceData.created_date}}</p>
+                                    </div>
+                                    <div class="form-group">
+                                            <label for="created_by">Created by</label>
+                                            <p>{{invoiceData.created_by}}</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                            <label for="reviwed_date">Reviwed Date</label>
+                                            <p>{{invoiceData.reviwed_date}}</p>
+                                    </div>
+                                    <div class="form-group">
+                                            <label for="reviwed_by">Reviwed by</label>
+                                            <p>{{invoiceData.reviwed_by}}</p>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -810,7 +834,6 @@
                     __form_init__();
                     __form_init_1__();
 
-                    $scope.manualDataEntry = camForm.variableManager.variables.manualDataEntry;
                     if (!camForm.variableManager.variables.manualDataEntry) {
                         camForm.variableManager.createVariable({
                             name: 'manualDataEntry',
@@ -905,6 +928,45 @@
     }
 </script>
 <script>
+
+    function AutoCompleteFormControl(options) {
+        return (function () {
+            let opt = Object.assign({
+                delay: 250
+
+            }, options);
+
+            let obj = {};
+
+            obj.control = jQuery(`#${options.id}`);
+
+            obj.control.select2({
+                ajax: {
+                    delay: opt.delay,
+                    url: 'http://192.168.1.95:8000/invoice/',
+                    data: function (params) {
+                        return {
+                            sold_by: jQuery("#invoiceSelect").val(),
+                            search: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(val => {
+                                return {
+                                    id: val.id,
+                                    text: val.invoice_number
+                                }
+                            })
+                        };
+                    },
+                }
+            });
+
+            return obj;
+        })();
+    }
+
     function __form_init_1__() {
         var invoiceSelect = jQuery('#invoiceSelect');
         invoiceSelect.select2({
