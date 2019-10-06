@@ -231,6 +231,9 @@
         .page_list{
             min-height: 200px;
         }
+        .input_field p{
+            display: inline-block;
+        }
     </style>
 </head>
 
@@ -748,19 +751,26 @@
     		camForm.on('form-loaded', function() {
 				camForm.variableManager.fetchVariable('imageUrls');
 				camForm.variableManager.fetchVariable('manualDataEntry');
+				camForm.variableManager.fetchVariable('intermediateData');
 			});
 
 			camForm.on('variables-restored', function() {
 
                 let images = camForm.variableManager.variableValue('imageUrls');
                 $scope.imageStack = ImageStack(images);
+                $scope.manualDataEntry = camForm.variableManager.variableValue('manualDataEntry') || {};
+                $scope.intermediateData = camForm.variableManager.variableValue('intermediateData') || {};
+
+                if ($scope.intermediateData) {
+                    loadInvoiceData($scope.intermediateData.supplierId, $scope.intermediateData.invoiceNumber);
+                }
 
 				setTimeout(() => {
                     $scope.imageEditorController = ImageEditorController(
                         Cropper("#image"),
                         $scope.imageStack,
-                        ThumborCropperTransformer({url: 'http://thumdor.xip.io'}),
-                        UppyController({companion: 'http://com.xip.io', tus: 'http://tusd.xip.io/files/'})
+                        ThumborCropperTransformer({url: 'http://thumbor.invoice.arungas.com'}),
+                        UppyController({companion: 'http://companion.invoice.arungas.com', tus: 'http://tusd.invoice.arungas.com/files/'})
                     );
                 }, 0);
 
@@ -768,17 +778,6 @@
                 setTimeout(() => {
                     __form_init__();
                     __form_init_1__();
-
-                    if (!camForm.variableManager.variables.manualDataEntry) {
-                        camForm.variableManager.createVariable({
-                            name: 'manualDataEntry',
-                            type: 'json',
-                            value: {},
-                            isDirty: false
-                        });
-                    }
-                    $scope.manualDataEntry = camForm.variableManager.variableValue('manualDataEntry') || {};
-
                 }, 0);
 
 			});
@@ -786,6 +785,7 @@
 			function storeVariables() {
                 camForm.variableManager.variableValue('imageUrls', $scope.imageEditorController.getImages());
                 camForm.variableManager.variableValue('manualDataEntry', $scope.manualDataEntry);
+                camForm.variableManager.variableValue('intermediateData', $scope.intermediateData);
 			}
 
             camForm.on('store', function(evt) {
@@ -796,17 +796,26 @@
               storeVariables();
             });
 
-            $scope.invoiceService = InvoiceService($http, $sce, {url: 'http://192.168.1.95:8000'});
+            $scope.invoiceService = InvoiceService($http, $sce, {url: 'http://api.invoice.arungas.com'});
 
+            function updateManualDataSelection(supplierData, invoiceData) {
+                $scope.manualDataEntry = {supplier: supplierData, invoice: invoiceData};
+                updateIntermediateData(supplierData.id, supplierData.text, invoiceData.text);
+            }
+
+            function updateIntermediateData(supplierId, supplierName, invoiceNumber) {
+                $scope.intermediateData = {supplierId, supplierName, invoiceNumber};
+                loadInvoiceData(supplierId, invoiceNumber);
+            }
 
             function loadInvoiceData(supplierId, invoiceNumber) {
-                $scope.manualDataEntry = {supplierId: supplierId, invoiceNumber: invoiceNumber};
                 $scope.invoiceData = {};
                 $scope.invoiceService.loadInvoiceData(supplierId, invoiceNumber).then(res => {
                     $scope.invoiceData = res;
                 });
             }
 
+            $window.updateManualDataSelection = updateManualDataSelection;
             $window.loadInvoiceData = loadInvoiceData;
 	    }]);
 
@@ -825,7 +834,7 @@
         soldBySelect.select2({
             ajax: {
                 delay: 250,
-                url: 'http://192.168.1.95:8000/supplier/',
+                url: 'http://api.invoice.arungas.com/supplier/',
                 data: function (params) {
                     return {search: params.term};
                 },
@@ -868,7 +877,6 @@
         return (function () {
             let opt = Object.assign({
                 delay: 250
-
             }, options);
 
             let obj = {};
@@ -878,7 +886,7 @@
             obj.control.select2({
                 ajax: {
                     delay: opt.delay,
-                    url: 'http://192.168.1.95:8000/invoice/',
+                    url: 'http://api.invoice.arungas.com/invoice/',
                     data: function (params) {
                         return {
                             sold_by: jQuery("#invoiceSelect").val(),
@@ -907,7 +915,7 @@
         invoiceSelect.select2({
             ajax: {
                 delay: 250,
-                url: 'http://192.168.1.95:8000/invoice/',
+                url: 'http://api.invoice.arungas.com/invoice/',
                 data: function (params) {
                     return {
                         sold_by: jQuery("#invoiceSelect").val(),
@@ -949,8 +957,10 @@
         // selectValue(invoiceSelect, 'http://192.168.1.95:8000/invoice/', 2);
 
         invoiceSelect.on('select2:select', function (e) {
-            let data = e.params.data;
-            window.loadInvoiceData(jQuery("#invoiceSelect").val(), data.invoice_number);
+            let invoiceData = e.params.data;
+            const supplierElement = jQuery("#soldBySelect");
+            let supplierData = {id: supplierElement.val(), text: supplierElement.text()};
+            window.updateManualDataSelection(supplierData, invoiceData);
         });
 
         // .trigger({
@@ -975,9 +985,9 @@
                 // $http.get('/someUrl', config).then(successCallback, errorCallback);
                 // $http.post('/someUrl', data, config).then(successCallback, errorCallback);
                 return $http.get(`${config.url}/invoice/`, {
-                    params: { sold_by: supplierId, invoiceNumber: 12}
+                    params: { sold_by: supplierId, invoiceNumber: invoiceNumber}
                 }).then(res => {
-                    return res.data.length == 1?res.data[0]:[];
+                    return res.data.length === 1?res.data[0]:[];
                 });
             };
 
