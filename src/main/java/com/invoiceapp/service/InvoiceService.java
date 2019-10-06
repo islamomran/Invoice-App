@@ -4,6 +4,7 @@ import com.invoiceapp.model.BarcodeModel;
 import com.invoiceapp.model.InvoiceModel;
 import io.tus.java.client.*;
 import org.apache.ibatis.javassist.tools.web.BadHttpRequest;
+import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -127,7 +128,7 @@ public class InvoiceService implements JavaDelegate {
 
             // Configure tus HTTP endpoint. This URL will be used for creating new uploads
             // using the Creation extension
-            client.setUploadCreationURL(new URL("https://master.tus.io/files/"));
+            client.setUploadCreationURL(new URL("http://tusd.invoice.arungas.com/files/"));
 
             // Enable resumable uploads by storing the upload URL in memory
             client.enableResuming(new TusURLMemoryStore());
@@ -188,5 +189,9 @@ public class InvoiceService implements JavaDelegate {
             e.printStackTrace();
         }
         return  imageURL;
+    }
+
+    public void persistLatestStatus(String invoiceNum, String processInstanceId){
+        camundaService.persistLatestStatus(invoiceNum, processInstanceId);
     }
 }

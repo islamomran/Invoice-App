@@ -11,6 +11,8 @@ public class InvoiceModel {
     private Date invoiceDate;
     private List<String> imageUrls;
     private String creator;
+    private String creatorEmail;
+    private String creatorId;
 
     public void setInvoiceDate(Date invoiceDate){
         this.invoiceDate = invoiceDate;
@@ -34,5 +36,21 @@ public class InvoiceModel {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public String getCreatorEmail() {
+        return creatorEmail;
+    }
+
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 }

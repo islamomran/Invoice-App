@@ -34,6 +34,8 @@ public class CamundaService {
         Map<String, Object> processVars = new HashMap<>();
         processVars.put("invoiceRecievringDate", invoiceModel.getInvoiceDate());
         processVars.put("creator", invoiceModel.getCreator());
+        processVars.put("creatorId", invoiceModel.getCreatorId());
+        processVars.put("creatorEmail", invoiceModel.getCreatorEmail());
         ObjectValue imageUrls = Variables.objectValue(invoiceModel.getImageUrls())
                 .serializationDataFormat("application/json").create();
         processVars.put("imageUrls", imageUrls);
@@ -108,6 +110,19 @@ public class CamundaService {
                     .processInstanceBusinessKey(instance.getBusinessKey())
                     .setVariable("status", "Discarded")
                     .correlateWithResult();
+        }
+    }
+
+    public void persistLatestStatus(String invoiceNum, String processInstanceId){
+        ProcessInstance statusProcessInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(invoiceNum).singleResult();
+        String status = (String)runtimeService.getVariable(statusProcessInstance.getId(), "status");
+        boolean isAmended = (boolean)runtimeService.getVariable(statusProcessInstance.getId(), "isAmended");
+        ProcessInstance InvoiceProcessInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        runtimeService.setVariable(InvoiceProcessInstance.getId(), "status", status);
+        runtimeService.setVariable(InvoiceProcessInstance.getId(), "isAmended", isAmended);
+        if(status.equalsIgnoreCase("approved")){
+            List<String> imageUrls = (List<String>)runtimeService.getVariable(statusProcessInstance.getId(), "imageUrls");
+            runtimeService.setVariable(InvoiceProcessInstance.getId(), "previousAcknowledgement", imageUrls);
         }
     }
 

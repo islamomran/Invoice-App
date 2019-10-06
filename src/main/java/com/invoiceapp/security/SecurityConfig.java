@@ -61,10 +61,11 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter{
         super.configure(http);
         http.csrf().disable();
         http.authorizeRequests()
-                .antMatchers("/state*")
+                .antMatchers("/state/*")
                 .permitAll()
                 .anyRequest()
                 .hasRole("user");
+
 
     }
 
