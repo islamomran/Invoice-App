@@ -140,37 +140,37 @@ We can only Approve the process if the overall state is in the Acknowledgement P
         <di:waypoint x="672" y="353" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_10820tg_di" bpmnElement="ExclusiveGateway_Approve_Reject_Send_To_Dataentry" isMarkerVisible="true">
-        <dc:Bounds x="761" y="225" width="50" height="50" />
+        <dc:Bounds x="747" y="225" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="812" y="132" width="83" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1wedjwi_di" bpmnElement="SequenceFlow_1wedjwi">
         <di:waypoint x="620" y="250" />
-        <di:waypoint x="761" y="250" />
+        <di:waypoint x="747" y="250" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1xw1i2i_di" bpmnElement="SequenceFlow_1xw1i2i">
-        <di:waypoint x="786" y="275" />
-        <di:waypoint x="786" y="353" />
+        <di:waypoint x="772" y="275" />
+        <di:waypoint x="772" y="353" />
         <di:waypoint x="708" y="353" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="738" y="338" width="32" height="14" />
+          <dc:Bounds x="730" y="338" width="32" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1ugpn05_di" bpmnElement="SequenceFlow_1ugpn05">
-        <di:waypoint x="786" y="250" />
-        <di:waypoint x="786" y="438" />
+        <di:waypoint x="772" y="275" />
+        <di:waypoint x="772" y="438" />
         <di:waypoint x="453" y="438" />
         <di:waypoint x="453" y="393" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="534" y="440" width="77" height="27" />
+          <dc:Bounds x="529" y="440" width="77" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0m8em2i_di" bpmnElement="SequenceFlow_0m8em2i">
-        <di:waypoint x="811" y="250" />
+        <di:waypoint x="797" y="250" />
         <di:waypoint x="920" y="250" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="822" y="234" width="41" height="14" />
+          <dc:Bounds x="812" y="234" width="41" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="UserTask_16o2emp_di" bpmnElement="Task_Invoice_DataEntry">
@@ -183,8 +183,8 @@ We can only Approve the process if the overall state is in the Acknowledgement P
         <dc:Bounds x="802" y="134" width="168" height="68" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Association_17oy0nx_di" bpmnElement="Association_17oy0nx">
-        <di:waypoint x="800" y="239" />
-        <di:waypoint x="844" y="202" />
+        <di:waypoint x="787" y="240" />
+        <di:waypoint x="838" y="202" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1f1x53b_di" bpmnElement="EndEvent_Approve">
         <dc:Bounds x="920" y="232" width="36" height="36" />
@@ -205,11 +205,11 @@ We can only Approve the process if the overall state is in the Acknowledgement P
         <dc:Bounds x="322" y="272" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0gckhzv_di" bpmnElement="SequenceFlow_0gckhzv">
-        <di:waypoint x="786" y="225" />
-        <di:waypoint x="786" y="108" />
+        <di:waypoint x="772" y="225" />
+        <di:waypoint x="772" y="108" />
         <di:waypoint x="620" y="108" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="643" y="53" width="90" height="53" />
+          <dc:Bounds x="637" y="53" width="90" height="53" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_14auiyf_di" bpmnElement="SequenceFlow_14auiyf">
