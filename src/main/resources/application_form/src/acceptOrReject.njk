@@ -1,10 +1,14 @@
 {% extends "src/base/base_editor.njk" %}
 
+{% block camblockstart %}
+const formType = 'Review';
+{% endblock %}
+
 {% block actions %}
     <div class="row">
-        <div class="button box-body ">
-            <select cam-variable-name="approval" required
-                    cam-variable-type="String">
+        <div class="button box-body col-md-12">
+            <select cam-variable-name="approval" cam-variable-type="String" required>
+                <option selected value> -- select an option -- </option>
                 <option value="accept">Accept</option>
                 <option value="reject">Reject</option>
             </select>
