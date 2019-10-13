@@ -34,7 +34,7 @@ public class InvoiceController {
 
     @PostMapping("/latestStatus")
     @CrossOrigin()
-    public LatestStatus persistLatestStatus(String invoiceNum, String processInstanceId){
+    public LatestStatus persistLatestStatus(@RequestParam String invoiceNum, @RequestParam String processInstanceId){
         return invoiceService.persistLatestStatus(invoiceNum, processInstanceId);
     }
 }
