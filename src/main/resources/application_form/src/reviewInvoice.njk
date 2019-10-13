@@ -1,14 +1,18 @@
 {% extends "src/base/base_editor.njk" %}
 
+{% block camblockstart %}
+const formType = 'UnlockRequest';
+{% endblock %}
+
 {% block actions %}
     <div class="row">
-        <div class="button box-body ">
-            <select cam-variable-name="reviewerApproval" cam-variable-type="String"
-                    required>
+        <div class="button box-body col-md-12">
+            <select cam-variable-name="reviewerApproval" cam-variable-type="String" required>
+                <option selected value> -- select an option -- </option>
                 <option value="approve">Approve</option>
                 <option value="reject">Reject</option>
                 <option value="send back">Send Back For MetaData Entry</option>
-                <option value="reject request">Rejecting Pervious Acknowledgement</option>
+                <option value="reject request">Rejecting Previous Acknowledgement</option>
             </select>
         </div>
     </div>

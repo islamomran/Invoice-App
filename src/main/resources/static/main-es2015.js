@@ -399,7 +399,7 @@ let Step2Component = class Step2Component {
             .use(uppy__WEBPACK_IMPORTED_MODULE_5__["ProgressBar"], {
             target: '.for-ProgressBar', hideAfterFinish: false
         })
-            .use(uppy__WEBPACK_IMPORTED_MODULE_5__["Tus"], { endpoint: 'https://master.tus.io/files/' });
+            .use(uppy__WEBPACK_IMPORTED_MODULE_5__["Tus"], { endpoint: 'http://tusd.invoice.arungas.com/files/' });
         this.uppy.
             on('file-added', (file) => {
             this.updateIsUploadValid(this.uppy.getFiles().length);
