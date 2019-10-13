@@ -1,6 +1,7 @@
 package com.invoiceapp.controller;
 
 import com.invoiceapp.model.InvoiceModel;
+import com.invoiceapp.model.LatestStatus;
 import com.invoiceapp.service.InvoiceService;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.adapters.jetty.core.AbstractKeycloakJettyAuthenticator;
@@ -33,7 +34,7 @@ public class InvoiceController {
 
     @PostMapping("/latestStatus")
     @CrossOrigin()
-    public void persistLatestStatus(String invoiceNum, String processInstanceId){
-        invoiceService.persistLatestStatus(invoiceNum, processInstanceId);
+    public LatestStatus persistLatestStatus(String invoiceNum, String processInstanceId){
+        return invoiceService.persistLatestStatus(invoiceNum, processInstanceId);
     }
 }

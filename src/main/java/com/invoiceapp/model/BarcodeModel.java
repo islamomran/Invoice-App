@@ -22,4 +22,6 @@ public class BarcodeModel {
     public void setImages(List<File> images) {
         this.images = images;
     }
+
+
 }

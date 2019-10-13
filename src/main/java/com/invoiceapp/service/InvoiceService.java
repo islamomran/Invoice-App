@@ -2,6 +2,7 @@ package com.invoiceapp.service;
 
 import com.invoiceapp.model.BarcodeModel;
 import com.invoiceapp.model.InvoiceModel;
+import com.invoiceapp.model.LatestStatus;
 import io.tus.java.client.*;
 import org.apache.ibatis.javassist.tools.web.BadHttpRequest;
 import org.camunda.bpm.engine.RuntimeService;
@@ -17,13 +18,16 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.ws.rs.InternalServerErrorException;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @Service
@@ -44,14 +48,22 @@ public class InvoiceService implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) {
         File file;
         BarcodeModel barcodeModel;
+        LinkedHashMap<String, String> intermediateData = new LinkedHashMap<>();
         try {
             List<String> imageUrls = (List<String>)delegateExecution.getVariable("imageUrls");
             file = this.fetchImages(imageUrls.get(0));
             barcodeModel = this.scanImages(file);
+
             imageUrls.set(0, this.uploadScannedImage(barcodeModel.getImages().get(0)));
             JSONObject barCodeJSON = new JSONObject(barcodeModel.getBarCode());
             String invoiceId = barCodeJSON.getString("id");
+            Long supplierId = barCodeJSON.getLong("supplier_id");
+            String SupplierName = barCodeJSON.getString("supplier_name");
             delegateExecution.setVariable("invoiceId", invoiceId);
+            intermediateData.put("supplierId", supplierId.toString());
+            intermediateData.put("supplierName", SupplierName);
+            intermediateData.put("invoiceNumber", invoiceId);
+            delegateExecution.setVariable("intermediateData", intermediateData);
             if(imageUrls != null){
                 ObjectValue images = Variables.objectValue(imageUrls)
                         .serializationDataFormat("application/json").create();
@@ -60,7 +72,9 @@ public class InvoiceService implements JavaDelegate {
         }catch (IOException ex){
             throw new BpmnError("error in executing script task : can't download the invoice image");
         }catch (BadHttpRequest ex){
-            throw new BpmnError("error in executing script task : Unable to decode barcode");
+            throw new BpmnError("Bad request for the decoding service");
+        }catch (InternalServerErrorException ex){
+            throw new BpmnError("Internal server error in the decoding service");
         }
     }
 
@@ -88,9 +102,10 @@ public class InvoiceService implements JavaDelegate {
         MultiValueMap<String, Object> body
                 = new LinkedMultiValueMap<>();
         body.add("file", fsr);
+        body.add("version", 1);
         HttpEntity<MultiValueMap<String, Object>> requestEntity
                 = new HttpEntity<>(body, headers);
-        String serverUrl = "http://decode.invoice.arungas.com/decode/?";
+        String serverUrl = "http://api.invoice.arungas.com/qr/decode/";
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<byte[]> response = null;
@@ -100,6 +115,8 @@ public class InvoiceService implements JavaDelegate {
         }catch (HttpStatusCodeException ex) {
             if (ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
                 throw new BadHttpRequest();
+            }else if(ex.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR){
+                throw new InternalServerErrorException();
             }
         }
         String barcode = response.getHeaders().get("X-Barcode").get(0);
@@ -191,7 +208,7 @@ public class InvoiceService implements JavaDelegate {
         return  imageURL;
     }
 
-    public void persistLatestStatus(String invoiceNum, String processInstanceId){
-        camundaService.persistLatestStatus(invoiceNum, processInstanceId);
+    public LatestStatus persistLatestStatus(String invoiceNum, String processInstanceId){
+        return camundaService.persistLatestStatus(invoiceNum, processInstanceId);
     }
 }
