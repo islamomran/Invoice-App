@@ -30,7 +30,7 @@ public class CamundaService {
 
     public String createInvoiceInstance(InvoiceModel invoiceModel){
         if(invoiceModel.getImageUrls() == null){
-            throw new BpmnError("No invoice get uploaded");
+            throw new RuntimeException("No invoice get uploaded");
         }
         Map<String, Object> processVars = new HashMap<>();
         processVars.put("invoiceRecievringDate", invoiceModel.getInvoiceDate());

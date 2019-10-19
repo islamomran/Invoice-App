@@ -37,7 +37,7 @@ public class StateService implements JavaDelegate, ExecutionListener {
 
     @Override
     public void execute(DelegateExecution delegateExecution) {
-        delegateExecution.getProcessInstance().setVariable("has_invoice_hash_changed", true);
+        delegateExecution.getProcessInstance().setVariable("has_invoice_hash_changed", false);
     }
 
     public void archiveAll(Date date){

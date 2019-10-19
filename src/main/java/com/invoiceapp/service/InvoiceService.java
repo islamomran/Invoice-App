@@ -45,7 +45,7 @@ public class InvoiceService implements JavaDelegate {
     }
 
     @Override
-    public void execute(DelegateExecution delegateExecution) {
+    public void execute(DelegateExecution delegateExecution) throws BadHttpRequest, IOException {
         File file;
         BarcodeModel barcodeModel;
         LinkedHashMap<String, String> intermediateData = new LinkedHashMap<>();
@@ -69,12 +69,8 @@ public class InvoiceService implements JavaDelegate {
                         .serializationDataFormat("application/json").create();
                 delegateExecution.setVariable("imageUrls", images);
             }
-        }catch (IOException ex){
-            throw new BpmnError("error in executing script task : can't download the invoice image");
-        }catch (BadHttpRequest ex){
-            throw new BpmnError("Bad request for the decoding service");
         }catch (InternalServerErrorException ex){
-            throw new BpmnError("Internal server error in the decoding service");
+            throw new BpmnError("Service not able to decode the invoice");
         }
     }
 

@@ -102,6 +102,12 @@
 			<artifactId>keycloak-spring-boot-starter</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.10.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<dependencyManagement>

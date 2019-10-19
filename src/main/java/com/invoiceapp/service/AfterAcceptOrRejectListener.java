@@ -6,6 +6,8 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedHashMap;
+
 @Component
 public class AfterAcceptOrRejectListener implements ExecutionListener {
 
@@ -20,7 +22,9 @@ public class AfterAcceptOrRejectListener implements ExecutionListener {
     public void notify(DelegateExecution delegateExecution){
         String approval = (String)delegateExecution.getVariable("approval");
         if(approval.equalsIgnoreCase("accept")){
-            this.stateService.editInstanceStatusAndAcknowledgement((String)delegateExecution.getVariable("invoiceId"), "Acknowledge Pending", "rejectPrevious", false);
+            LinkedHashMap<String, String> intermediateData = (LinkedHashMap<String, String>)delegateExecution.getVariable("intermediateData");
+            String businessKey = intermediateData.get("invoiceNumber");
+            this.stateService.editInstanceStatusAndAcknowledgement(businessKey, "Acknowledge Pending", "rejectPrevious", false);
         }
     }
 }

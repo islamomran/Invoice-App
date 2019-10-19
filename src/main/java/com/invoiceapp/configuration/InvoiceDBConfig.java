@@ -1,6 +1,7 @@
 package com.invoiceapp.configuration;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,13 +26,22 @@ import java.util.Map;
 )
 public class InvoiceDBConfig {
 
+    @Value("${invoice-app.datasource.driver}")
+    private String driver;
+    @Value("${invoice-app.datasource.Url}")
+    private String Url;
+    @Value("${invoice-app.datasource.Username}")
+    private String Username;
+    @Value("${invoice-app.datasource.Password}")
+    private String Password;
+
     @Bean(name = "invoiceDataSource")
     public DataSource invoiceDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:4306/mydb");
-        dataSource.setUsername("root");
-        dataSource.setPassword("root");
+        dataSource.setDriverClassName(driver);
+        dataSource.setUrl(Url);
+        dataSource.setUsername(Username);
+        dataSource.setPassword(Password);
 
         return dataSource;
     }
