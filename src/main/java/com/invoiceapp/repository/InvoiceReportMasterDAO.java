@@ -3,6 +3,8 @@ package com.invoiceapp.repository;
 import com.invoiceapp.model.InvoiceReportMaster;
 import org.springframework.data.repository.CrudRepository;
 
-public interface InvoiceReportMasterDAO extends CrudRepository<InvoiceReportMaster, Long> {
+import java.util.List;
 
+public interface InvoiceReportMasterDAO extends CrudRepository<InvoiceReportMaster, String> {
+    public List<InvoiceReportMaster> findByInvoiceNOIn(List<String> invoices);
 }

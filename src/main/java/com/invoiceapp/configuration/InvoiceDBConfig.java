@@ -53,7 +53,7 @@ public class InvoiceDBConfig {
             @Qualifier("invoiceDataSource") DataSource dataSource
     ) {
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("hibernate.hbm2ddl.auto", "create");
+        properties.put("hibernate.hbm2ddl.auto", "update");
         return
                 builder
                         .dataSource(dataSource)

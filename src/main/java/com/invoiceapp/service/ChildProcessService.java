@@ -1,5 +1,6 @@
 package com.invoiceapp.service;
 
+import com.invoiceapp.model.ImageLocation;
 import com.invoiceapp.model.InvoiceReportMaster;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -31,13 +32,22 @@ public class ChildProcessService implements JavaDelegate {
         String businessKey = intermediateData.get("invoiceNumber");
         Date invoiceRecievingDate =  (Date)processInstance.getVariable("invoiceRecievringDate");
         List<String> imageUrls = (List<String>)processInstance.getVariable("imageUrls");
-        camundaService.editInstanceStatusAndAcknowledgement(businessKey, "approved",
-                "acknowledge", true, invoiceRecievingDate, imageUrls);
         InvoiceReportMaster invoiceReportMaster = new InvoiceReportMaster();
         invoiceReportMaster.setRecievingDate(invoiceRecievingDate);
+        invoiceReportMaster.setInvoiceNO(businessKey);
         invoiceReportMaster.setAmount(1554.0);
-        invoiceReportMaster.setImageLocation((ArrayList<String>) imageUrls);
-        invoiceReportService.createInvoiceReport(invoiceReportMaster);
+        List<ImageLocation> imageLocations = new ArrayList<>();
+        for(String location : imageUrls){
+            ImageLocation imgLocation = new ImageLocation();
+            imgLocation.setLocationUrl(location);
+            imgLocation.setInvoiceReportMaster(invoiceReportMaster);
+            imageLocations.add(imgLocation);
+        }
+        invoiceReportMaster.setImageLocation(imageLocations);
+        invoiceReportService.saveInvoiceReport(invoiceReportMaster);
+        camundaService.editInstanceStatusAndAcknowledgement(businessKey, "approved",
+                "acknowledge", true, invoiceRecievingDate, imageUrls);
+
 
     }
 }

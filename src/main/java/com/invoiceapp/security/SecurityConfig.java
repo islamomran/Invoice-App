@@ -65,6 +65,8 @@ class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter{
                 .permitAll()
                 .antMatchers("/invoice/latestStatus")
                 .permitAll()
+                .antMatchers("/invoice/generate-report")
+                .permitAll()
                 .anyRequest()
                 .hasRole("user");
 

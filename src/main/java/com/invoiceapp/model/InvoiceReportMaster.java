@@ -1,5 +1,7 @@
 package com.invoiceapp.model;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -8,12 +10,15 @@ public class InvoiceReportMaster {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Column(length = 100)
     private String invoiceNO;
     private Date recievingDate;
     private double amount;
-    @ElementCollection()
-    @CollectionTable(name = "image_locations")
-    private List<String> imageLocation;
+    @OneToMany(mappedBy = "invoiceReportMaster",fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private List<ImageLocation> imageLocation;
+
+    @Transient
+    private String imageUrl;
 
     public InvoiceReportMaster(){}
 
@@ -55,11 +60,20 @@ public class InvoiceReportMaster {
         this.amount = amount;
     }
 
-    public List<String> getImageLocation() {
+    public List<ImageLocation> getImageLocation() {
         return imageLocation;
     }
 
-    public void setImageLocation(List<String> imageLocation) {
+    public void setImageLocation(List<ImageLocation> imageLocation) {
         this.imageLocation = imageLocation;
+    }
+
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
