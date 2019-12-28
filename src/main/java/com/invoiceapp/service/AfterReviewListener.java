@@ -20,7 +20,6 @@ public class AfterReviewListener implements TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
-        //String businessKey = (String)delegateTask.getVariable("invoiceId");
         LinkedHashMap<String, String> intermediateData = (LinkedHashMap<String, String>)delegateTask.getVariable("intermediateData");
         String businessKey = intermediateData.get("invoiceNumber");
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(businessKey).singleResult();

@@ -94,7 +94,7 @@ We can only Approve the process if the overall state is in the Acknowledgement P
       <bpmn:incoming>SequenceFlow_0gckhzv</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_14auiyf</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Task_Read_Metadata" name="Read Metadata" camunda:asyncBefore="true" camunda:class="com.invoiceapp.service.InvoiceService">
+    <bpmn:serviceTask id="Task_Read_Metadata" name="Read Metadata" camunda:asyncBefore="true" camunda:delegateExpression="${invoiceService}">
       <bpmn:incoming>SequenceFlow_0x4tuc1</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0pj9akz</bpmn:outgoing>
     </bpmn:serviceTask>

@@ -54,7 +54,7 @@ public class InvoiceController {
     }
 
     @PostMapping(value = "generate-report", produces=MediaType.APPLICATION_PDF_VALUE)
-    public ResponseEntity<byte[]> getInvoicesReport(@RequestBody InvoiceReportJSON invoiceReportJSON) throws JRException {
+    public ResponseEntity<byte[]> getInvoicesReport(@RequestBody InvoiceReportJSON invoiceReportJSON) throws JRException, IOException {
         byte[] invoiceReport = invoiceReportService.generateReport(invoiceReportJSON.getInvoices());
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=invoiceReport.pdf");
@@ -63,4 +63,5 @@ public class InvoiceController {
                 .headers(headers)
                 .body(invoiceReport);
     }
+
 }

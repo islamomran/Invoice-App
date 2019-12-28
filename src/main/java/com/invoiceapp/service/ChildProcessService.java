@@ -27,15 +27,16 @@ public class ChildProcessService implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) {
         DelegateExecution processInstance = delegateExecution.getProcessInstance();
-        //String businessKey =  (String)processInstance.getVariable("invoiceId");
         LinkedHashMap<String, String> intermediateData = (LinkedHashMap<String, String>)processInstance.getVariable("intermediateData");
         String businessKey = intermediateData.get("invoiceNumber");
         Date invoiceRecievingDate =  (Date)processInstance.getVariable("invoiceRecievringDate");
         List<String> imageUrls = (List<String>)processInstance.getVariable("imageUrls");
         InvoiceReportMaster invoiceReportMaster = new InvoiceReportMaster();
         invoiceReportMaster.setRecievingDate(invoiceRecievingDate);
+        invoiceReportMaster.setInvoiceDate(invoiceRecievingDate);
         invoiceReportMaster.setInvoiceNO(businessKey);
         invoiceReportMaster.setAmount(1554.0);
+        invoiceReportMaster.setRunningTotal(1554.0);
         List<ImageLocation> imageLocations = new ArrayList<>();
         for(String location : imageUrls){
             ImageLocation imgLocation = new ImageLocation();

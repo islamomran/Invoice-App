@@ -11,9 +11,15 @@ public class ImageLocation {
 
     private String locationUrl;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="invoiceNO", nullable=false)
     private InvoiceReportMaster invoiceReportMaster;
+
+    @Transient
+    private int pageNum;
+
+    @Transient
+    private int count;
 
     public int getId() {
         return id;
@@ -37,5 +43,21 @@ public class ImageLocation {
 
     public void setInvoiceReportMaster(InvoiceReportMaster invoiceReportMaster) {
         this.invoiceReportMaster = invoiceReportMaster;
+    }
+
+    public int getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

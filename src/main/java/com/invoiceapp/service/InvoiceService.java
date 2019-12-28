@@ -5,7 +5,6 @@ import com.invoiceapp.model.InvoiceModel;
 import com.invoiceapp.model.LatestStatus;
 import io.tus.java.client.*;
 import org.apache.ibatis.javassist.tools.web.BadHttpRequest;
-import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -13,12 +12,12 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.ObjectValue;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,7 +25,6 @@ import javax.ws.rs.InternalServerErrorException;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -34,6 +32,9 @@ import java.util.List;
 public class InvoiceService implements JavaDelegate {
 
     CamundaService camundaService;
+
+    @Value("${service.decode}")
+    private String decodeServiceURL;
 
     @Autowired
     public void InvoiceService(CamundaService camundaService){
@@ -48,6 +49,7 @@ public class InvoiceService implements JavaDelegate {
     public void execute(DelegateExecution delegateExecution) throws BadHttpRequest, IOException {
         File file;
         BarcodeModel barcodeModel;
+
         LinkedHashMap<String, String> intermediateData = new LinkedHashMap<>();
         try {
             List<String> imageUrls = (List<String>)delegateExecution.getVariable("imageUrls");
@@ -101,7 +103,7 @@ public class InvoiceService implements JavaDelegate {
         body.add("version", 1);
         HttpEntity<MultiValueMap<String, Object>> requestEntity
                 = new HttpEntity<>(body, headers);
-        String serverUrl = "http://api.invoice.arungas.com/qr/decode/";
+        String serverUrl = decodeServiceURL;
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<byte[]> response = null;
@@ -206,5 +208,13 @@ public class InvoiceService implements JavaDelegate {
 
     public LatestStatus persistLatestStatus(String invoiceNum, String processInstanceId){
         return camundaService.persistLatestStatus(invoiceNum, processInstanceId);
+    }
+
+    public String getDecodeServiceURL() {
+        return decodeServiceURL;
+    }
+
+    public void setDecodeServiceURL(String decodeServiceURL) {
+        this.decodeServiceURL = decodeServiceURL;
     }
 }
